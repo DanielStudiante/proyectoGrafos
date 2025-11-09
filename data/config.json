@@ -9,7 +9,7 @@
           "linkedTo": [
             {
               "starId": 2,
-              "distance": 120
+              "distance": 85
             },
             {
               "starId": 4,
@@ -17,12 +17,15 @@
             },
             {
               "starId": 5,
-              "distance": 101
+              "distance": 95
             }
           ],
           "radius": 0.4,
           "timeToEat": 3,
+          "stayDuration": 4.0,
           "amountOfEnergy": 1,
+          "healthImpact": -2.5,
+          "lifeTimeImpact": -10,
           "coordenates": {
             "x": 25,
             "y": 34
@@ -35,7 +38,7 @@
           "linkedTo": [
             {
               "starId": 1,
-              "distance": 120
+              "distance": 85
             },
             {
               "starId": 7,
@@ -48,7 +51,10 @@
           ],
           "radius": 0.2,
           "timeToEat": 2,
+          "stayDuration": 6.0,
           "amountOfEnergy": 2,
+          "healthImpact": 3.0,
+          "lifeTimeImpact": 5,
           "coordenates": {
             "x": 37,
             "y": 15
@@ -74,7 +80,10 @@
           ],
           "radius": 1,
           "timeToEat": 1,
+          "stayDuration": 8.0,
           "amountOfEnergy": 3,
+          "healthImpact": 5.0,
+          "lifeTimeImpact": 15,
           "coordenates": {
             "x": 75,
             "y": 43
@@ -105,7 +114,10 @@
           ],
           "radius": 0.6,
           "timeToEat": 3,
+          "stayDuration": 5.0,
           "amountOfEnergy": 1,
+          "healthImpact": -1.0,
+          "lifeTimeImpact": -5,
           "coordenates": {
             "x": 123,
             "y": 167
@@ -127,7 +139,10 @@
           ],
           "radius": 0.8,
           "timeToEat": 3,
+          "stayDuration": 10.0,
           "amountOfEnergy": 5,
+          "healthImpact": 4.0,
+          "lifeTimeImpact": 20,
           "coordenates": {
             "x": 189,
             "y": 146
@@ -145,6 +160,7 @@
           ],
           "radius": 1,
           "timeToEat": 1,
+          "stayDuration": 8.0,
           "amountOfEnergy": 3,
           "coordenates": {
             "x": 75,

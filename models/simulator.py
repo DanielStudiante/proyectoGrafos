@@ -1,12 +1,19 @@
-from models.vertex import GrafoConstelaciones
+"""
+Simulador de viaje.
+Responsabilidad: Mantener estado del viaje y coordinar acciones.
+"""
+
+from models.constellation import GrafoConstelaciones
 from models.donkey import Donkey
 from models.star import Estrella
-from algorithms.dijkstra import encontrar_camino_mas_corto, obtener_estrellas_alcanzables
+from models.travel_manager import TravelManager
+from algorithms.dijkstra import obtener_estrellas_alcanzables
+
 
 class SimuladorViaje:
     """
     Coordina el viaje del burro por las constelaciones.
-    Integra la lógica de Donkey con el grafo de estrellas.
+    Mantiene el estado del viaje (posición, historial, distancia).
     """
     
     def __init__(self, grafo: GrafoConstelaciones, donkey: Donkey, posicion_inicial: int):
@@ -15,6 +22,7 @@ class SimuladorViaje:
         self.posicion_actual = posicion_inicial
         self.historial_viaje = [posicion_inicial]
         self.distancia_total = 0.0
+        self.travel_manager = TravelManager(grafo, donkey)
     
     def obtener_estrella_actual(self) -> Estrella:
         """Obtiene la estrella donde está el burro actualmente."""
@@ -59,6 +67,11 @@ class SimuladorViaje:
             print(f"   🔋 Energía restante: {opcion['energia_restante']:.2f}")
             print(f"   🛤️  Camino: {' → '.join(map(str, opcion['camino']))}")
             
+            # Mostrar efectos de investigación
+            effects = estrella.get_investigation_effects()
+            if effects['health_impact'] != 0 or effects['life_time_impact'] != 0:
+                print(f"   🔬 Efectos: {effects['description']}")
+            
             if estrella.hipergigante:
                 print(f"   🎁 Bonus: +50% energía, x2 pasto")
         
@@ -67,88 +80,19 @@ class SimuladorViaje:
     def viajar_a(self, destino_id: int, verbose: bool = True) -> bool:
         """
         Ejecuta un viaje completo a una estrella destino.
-        Usa el método trip() de Donkey para aplicar daño.
         """
-        if not self.donkey.alive:
-            print("❌ El burro está muerto. No puede viajar.")
-            return False
-        
-        # Planificar ruta
-        resultado = encontrar_camino_mas_corto(
-            self.grafo,
+        exito, nueva_posicion, distancia = self.travel_manager.viajar_a(
             self.posicion_actual,
             destino_id,
-            verbose=False
+            verbose
         )
         
-        if not resultado or not resultado['existe']:
-            if verbose:
-                print(f"❌ No hay ruta disponible a la estrella {destino_id}")
-            return False
+        if exito:
+            self.posicion_actual = nueva_posicion
+            self.historial_viaje.append(nueva_posicion)
+            self.distancia_total += distancia
         
-        if resultado['distancia'] > self.donkey.donkey_energy:
-            if verbose:
-                print(f"❌ Energía insuficiente.")
-                print(f"   Necesitas: {resultado['distancia']:.2f}")
-                print(f"   Tienes: {self.donkey.donkey_energy:.2f}")
-            return False
-        
-        # Ejecutar viaje por pasos
-        if verbose:
-            print(f"\n🚀 INICIANDO VIAJE")
-            print(f"{'-'*60}")
-        
-        for paso in resultado['pasos']:
-            estrella_origen = self.grafo.obtener_estrella(paso['desde'])
-            estrella_destino = self.grafo.obtener_estrella(paso['hasta'])
-            
-            if verbose:
-                print(f"\n📍 {estrella_origen.label} → {estrella_destino.label}")
-                print(f"   Distancia: {paso['peso']:.2f} ly")
-            
-            # Determinar si viaja entre constelaciones
-            es_misma_constelacion = bool(
-                set(estrella_origen.constelaciones) & 
-                set(estrella_destino.constelaciones)
-            )
-            
-            # Usar método trip() de Donkey
-            resultado_viaje = self.donkey.trip(
-                distance=paso['peso'],
-                time_to_eat_kg=estrella_destino.time_to_eat,
-                time_of_stance=0,  # Se manejará después
-                is_star=es_misma_constelacion
-            )
-            
-            if resultado_viaje:
-                if verbose:
-                    print(f"   ❌ {resultado_viaje}")
-                return False
-            
-            # Actualizar posición
-            self.posicion_actual = paso['hasta']
-            self.historial_viaje.append(paso['hasta'])
-            self.distancia_total += paso['peso']
-            
-            if verbose:
-                print(f"   ⚡ Energía restante: {self.donkey.donkey_energy:.2f}")
-                print(f"   💚 Salud: {self.donkey.health}")
-        
-        # Llegada a la estrella destino
-        estrella_destino = self.grafo.obtener_estrella(destino_id)
-        estrella_destino.marcar_visitada()
-        
-        if verbose:
-            print(f"\n✅ LLEGASTE A: {estrella_destino.label}")
-            
-            # Verificar si es hipergigante
-            if estrella_destino.hipergigante:
-                print(f"\n⭐ ¡ESTRELLA HIPERGIGANTE!")
-                self.donkey.hyper_star(0)  # Aplicar bonus
-                print(f"   🎁 Energía: {self.donkey.donkey_energy:.2f} (+50%)")
-                print(f"   🌾 Pasto: {self.donkey.grass_in_basement} kg (x2)")
-        
-        return True
+        return exito
     
     def comer_pasto(self, cantidad_kg: int = 1) -> bool:
         """Hace que el burro coma pasto del sótano."""
@@ -169,20 +113,41 @@ class SimuladorViaje:
         
         return False
     
-    def investigar_estrella(self, tiempo_investigacion: float = 5.0):
+    def investigar_estrella(self, tiempo_investigacion: float = None):
         """
-        Investiga la estrella actual.
-        Implementar lógica de investigación según el proyecto.
+        Investiga la estrella actual aplicando los efectos de salud y tiempo de vida.
+        
+        Args:
+            tiempo_investigacion: Tiempo de investigación en horas. 
+                                 Si es None, usa el stayDuration de la estrella.
         """
         estrella = self.obtener_estrella_actual()
+        
+        # Usar el tiempo de estadía definido en la estrella si no se especifica
+        if tiempo_investigacion is None:
+            tiempo_investigacion = estrella.stay_duration
         
         print(f"\n🔬 INVESTIGANDO: {estrella.label}")
         print(f"   ⏱️  Tiempo de investigación: {tiempo_investigacion} horas")
         
-        # Aquí va la lógica de investigación
-        # (ganancia de conocimiento, efectos sobre el burro, etc.)
+        # Mostrar efectos esperados
+        effects = estrella.get_investigation_effects()
+        print(f"   📊 Efectos: {effects['description']}")
+        
+        # Aplicar investigación
+        resultado = self.donkey.stay_of_star(
+            time_to_eat_kg=estrella.time_to_eat,
+            time_of_stance=tiempo_investigacion,
+            health_impact=estrella.health_impact,
+            life_time_impact=estrella.life_time_impact,
+        )
+        
+        if resultado:
+            print(f"   ❌ {resultado}")
+            return False
         
         print(f"   ✅ Investigación completada")
+        return True
     
     def obtener_resumen_viaje(self) -> dict:
         """Genera un resumen del viaje."""
