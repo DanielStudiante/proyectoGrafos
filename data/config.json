@@ -9,19 +9,20 @@
           "linkedTo": [
             {
               "starId": 2,
-              "distance": 85
+              "distance": 20
             },
             {
               "starId": 4,
-              "distance": 70
+              "distance": 25
             }
           ],
           "radius": 0.4,
-          "timeToEat": 3,
-          "stayDuration": 4.0,
+          "timeToEat": 1,
+          "stayDuration": 10.0,
           "amountOfEnergy": 1,
-          "healthImpact": -2.5,
-          "lifeTimeImpact": -10,
+          "healthImpact": -5.0,
+          "lifeTimeImpact": -15,
+          "researchEnergyCost": 1.5,
           "coordenates": {
             "x": 25,
             "y": 34
@@ -34,7 +35,7 @@
           "linkedTo": [
             {
               "starId": 1,
-              "distance": 85
+              "distance": 20
             },
             {
               "starId": 3,
@@ -42,15 +43,16 @@
             },
             {
               "starId": 5,
-              "distance": 55
+              "distance": 22
             }
           ],
           "radius": 0.2,
           "timeToEat": 2,
-          "stayDuration": 6.0,
+          "stayDuration": 8.0,
           "amountOfEnergy": 2,
-          "healthImpact": 3.0,
-          "lifeTimeImpact": 5,
+          "healthImpact": 4.0,
+          "lifeTimeImpact": 12,
+          "researchEnergyCost": 1.0,
           "coordenates": {
             "x": 37,
             "y": 15
@@ -80,6 +82,7 @@
           "amountOfEnergy": 3,
           "healthImpact": 5.0,
           "lifeTimeImpact": 15,
+          "researchEnergyCost": 2.0,
           "coordenates": {
             "x": 75,
             "y": 43
@@ -92,28 +95,29 @@
           "linkedTo": [
             {
               "starId": 1,
-              "distance": 70
+              "distance": 30
             },
             {
               "starId": 3,
-              "distance": 65
+              "distance": 28
             },
             {
               "starId": 5,
-              "distance": 50
+              "distance": 35
             }
           ],
           "radius": 0.5,
-          "timeToEat": 2,
-          "stayDuration": 5.0,
+          "timeToEat": 3,
+          "stayDuration": 12.0,
           "amountOfEnergy": 2,
-          "healthImpact": 1.5,
-          "lifeTimeImpact": 8,
+          "healthImpact": 0.0,
+          "lifeTimeImpact": 0,
           "coordenates": {
             "x": 60,
             "y": 80
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 1.5
         },
         {
           "id": 5,
@@ -121,28 +125,29 @@
           "linkedTo": [
             {
               "starId": 2,
-              "distance": 55
+              "distance": 22
             },
             {
               "starId": 4,
-              "distance": 50
+              "distance": 35
             },
             {
               "starId": 6,
-              "distance": 40
+              "distance": 25
             }
           ],
           "radius": 0.3,
-          "timeToEat": 2,
-          "stayDuration": 4.0,
+          "timeToEat": 1,
+          "stayDuration": 6.0,
           "amountOfEnergy": 1,
-          "healthImpact": 2.0,
-          "lifeTimeImpact": 7,
+          "healthImpact": 2.5,
+          "lifeTimeImpact": 10,
           "coordenates": {
             "x": 95,
             "y": 25
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 0.5
         }
       ]
     },
@@ -166,7 +171,8 @@
             "x": 75,
             "y": 43
           },
-          "hypergiant": true
+          "hypergiant": true,
+          "researchEnergyCost": 0.9
         },
         {
           "id": 12,
@@ -174,28 +180,29 @@
           "linkedTo": [
             {
               "starId": 3,
-              "distance": 95
+              "distance": 45
             },
             {
               "starId": 13,
-              "distance": 60
+              "distance": 28
             },
             {
               "starId": 14,
-              "distance": 75
+              "distance": 32
             }
           ],
           "radius": 0.6,
-          "timeToEat": 3,
-          "stayDuration": 5.0,
+          "timeToEat": 4,
+          "stayDuration": 15.0,
           "amountOfEnergy": 1,
-          "healthImpact": -1.0,
-          "lifeTimeImpact": -5,
+          "healthImpact": -3.0,
+          "lifeTimeImpact": -12,
           "coordenates": {
             "x": 123,
             "y": 167
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 0.8
         },
         {
           "id": 13,
@@ -203,28 +210,29 @@
           "linkedTo": [
             {
               "starId": 12,
-              "distance": 60
+              "distance": 28
             },
             {
               "starId": 14,
-              "distance": 45
+              "distance": 20
             },
             {
               "starId": 15,
-              "distance": 80
+              "distance": 38
             }
           ],
           "radius": 0.8,
-          "timeToEat": 3,
+          "timeToEat": 2,
           "stayDuration": 10.0,
           "amountOfEnergy": 5,
-          "healthImpact": 4.0,
+          "healthImpact": 5.0,
           "lifeTimeImpact": 20,
           "coordenates": {
             "x": 189,
             "y": 146
           },
-          "hypergiant": true
+          "hypergiant": true,
+          "researchEnergyCost": 1.6
         },
         {
           "id": 14,
@@ -232,24 +240,25 @@
           "linkedTo": [
             {
               "starId": 12,
-              "distance": 75
+              "distance": 32
             },
             {
               "starId": 13,
-              "distance": 45
+              "distance": 20
             }
           ],
           "radius": 0.4,
-          "timeToEat": 2,
-          "stayDuration": 6.0,
+          "timeToEat": 1,
+          "stayDuration": 5.0,
           "amountOfEnergy": 2,
-          "healthImpact": 0.5,
-          "lifeTimeImpact": 3,
+          "healthImpact": 1.5,
+          "lifeTimeImpact": 8,
           "coordenates": {
             "x": 155,
             "y": 110
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 1.5
         }
       ]
     },
@@ -262,28 +271,29 @@
           "linkedTo": [
             {
               "starId": 5,
-              "distance": 40
+              "distance": 25
             },
             {
               "starId": 7,
-              "distance": 35
+              "distance": 18
             },
             {
               "starId": 8,
-              "distance": 60
+              "distance": 30
             }
           ],
           "radius": 0.6,
-          "timeToEat": 3,
+          "timeToEat": 2,
           "stayDuration": 7.0,
           "amountOfEnergy": 3,
           "healthImpact": 3.5,
-          "lifeTimeImpact": 12,
+          "lifeTimeImpact": 15,
           "coordenates": {
             "x": 130,
             "y": 45
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 1.8
         },
         {
           "id": 7,
@@ -291,28 +301,29 @@
           "linkedTo": [
             {
               "starId": 6,
-              "distance": 35
+              "distance": 18
             },
             {
               "starId": 8,
-              "distance": 55
+              "distance": 24
             },
             {
               "starId": 9,
-              "distance": 70
+              "distance": 35
             }
           ],
           "radius": 0.7,
-          "timeToEat": 2,
+          "timeToEat": 1,
           "stayDuration": 5.0,
           "amountOfEnergy": 2,
-          "healthImpact": 2.5,
-          "lifeTimeImpact": 9,
+          "healthImpact": -1.5,
+          "lifeTimeImpact": -8,
           "coordenates": {
             "x": 165,
             "y": 60
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 0.6
         },
         {
           "id": 8,
@@ -320,28 +331,29 @@
           "linkedTo": [
             {
               "starId": 6,
-              "distance": 60
+              "distance": 30
             },
             {
               "starId": 7,
-              "distance": 55
+              "distance": 24
             },
             {
               "starId": 15,
-              "distance": 65
+              "distance": 40
             }
           ],
           "radius": 0.9,
-          "timeToEat": 4,
+          "timeToEat": 3,
           "stayDuration": 12.0,
           "amountOfEnergy": 4,
           "healthImpact": 5.0,
-          "lifeTimeImpact": 18,
+          "lifeTimeImpact": 20,
           "coordenates": {
             "x": 145,
             "y": 25
           },
-          "hypergiant": true
+          "hypergiant": true,
+          "researchEnergyCost": 1.1
         }
       ]
     },
@@ -354,28 +366,29 @@
           "linkedTo": [
             {
               "starId": 7,
-              "distance": 70
+              "distance": 35
             },
             {
               "starId": 10,
-              "distance": 50
+              "distance": 22
             },
             {
               "starId": 11,
-              "distance": 45
+              "distance": 19
             }
           ],
           "radius": 0.5,
-          "timeToEat": 3,
+          "timeToEat": 2,
           "stayDuration": 6.0,
           "amountOfEnergy": 2,
-          "healthImpact": 1.0,
-          "lifeTimeImpact": 6,
+          "healthImpact": 0.0,
+          "lifeTimeImpact": 0,
           "coordenates": {
             "x": 25,
             "y": 120
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 0.5
         },
         {
           "id": 10,
@@ -383,24 +396,25 @@
           "linkedTo": [
             {
               "starId": 9,
-              "distance": 50
+              "distance": 22
             },
             {
               "starId": 11,
-              "distance": 38
+              "distance": 16
             }
           ],
           "radius": 0.4,
-          "timeToEat": 2,
-          "stayDuration": 5.0,
+          "timeToEat": 1,
+          "stayDuration": 4.0,
           "amountOfEnergy": 1,
-          "healthImpact": 0.0,
-          "lifeTimeImpact": 0,
+          "healthImpact": -2.0,
+          "lifeTimeImpact": -10,
           "coordenates": {
             "x": 55,
             "y": 155
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 0.8
         },
         {
           "id": 11,
@@ -429,7 +443,8 @@
             "x": 85,
             "y": 130
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 1.3
         }
       ]
     },
@@ -463,7 +478,8 @@
             "x": 170,
             "y": 185
           },
-          "hypergiant": true
+          "hypergiant": true,
+          "researchEnergyCost": 0.5
         },
         {
           "id": 16,
@@ -488,7 +504,8 @@
             "x": 130,
             "y": 195
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 0.8
         },
         {
           "id": 17,
@@ -513,14 +530,15 @@
             "x": 100,
             "y": 180
           },
-          "hypergiant": false
+          "hypergiant": false,
+          "researchEnergyCost": 1.5
         }
       ]
     }
   ],
   "burroenergiaInicial": 100,
   "estadoSalud": "Excelente",
-  "pasto": 300,
+  "pasto": 50,
   "number": 123,
   "startAge": 12,
   "deathAge": 3567

@@ -34,6 +34,7 @@ class GrafoConstelaciones(Graph):
         amount_of_energy: float = 10.0,
         health_impact: float = 0.0,
         life_time_impact: float = 0.0,
+        research_energy_cost: float = 1.0,
     ) -> Estrella:
         """
         Agrega una estrella al grafo.
@@ -74,6 +75,7 @@ class GrafoConstelaciones(Graph):
             amount_of_energy=amount_of_energy,
             health_impact=health_impact,
             life_time_impact=life_time_impact,
+            research_energy_cost=research_energy_cost,
         )
         
         self.estrellas[id] = estrella

@@ -69,14 +69,32 @@ class GameEventHandler:
     
     def _handle_left_click(self, mouse_pos):
         """Maneja click izquierdo."""
+        # Prioridad al panel inter-galáctico si está visible
+        if self.gm.intergalactic_panel.visible:
+            result = self.gm.intergalactic_panel.handle_click(mouse_pos)
+            
+            if result == "travel":
+                self._execute_intergalactic_travel()
+            elif result == "cancel":
+                pass  # Ya se cierra automáticamente
         # Prioridad al editor si está visible
-        if self.gm.star_editor.visible:
+        elif self.gm.star_editor.visible:
             result = self.gm.star_editor.handle_click(mouse_pos)
             
             if result == "save":
                 self._save_config()
             elif result == "close":
                 self.gm._update_ui()
+        # Verificar si se hace clic en el panel de información de estrella
+        elif self.gm.star_info_panel.visible:
+            if self.gm.star_info_panel.handle_click(mouse_pos):
+                # Se cerró el panel, no hacer nada más
+                return
+            # Si no se cerró, permitir seleccionar otra estrella
+            star_id = self.gm.graph_renderer.get_star_at_position(mouse_pos)
+            if star_id:
+                self.gm.selected_star_id = star_id
+                self.gm._update_star_selection()
         else:
             # Click en una estrella
             star_id = self.gm.graph_renderer.get_star_at_position(mouse_pos)
@@ -92,12 +110,17 @@ class GameEventHandler:
     
     def _update_panels_state(self, mouse_pos, mouse_pressed):
         """Actualiza el estado de los paneles con el mouse."""
+        # Verificar si estamos en una hipergigante
+        current_star = self.gm.grafo.obtener_estrella(self.gm.simulador.posicion_actual)
+        is_hypergiant = current_star.is_hypergiant if current_star else False
+        
         self.gm.actions_panel.update(
             mouse_pos,
             mouse_pressed and not self.mouse_pressed_last_frame,
             can_travel=(self.gm.selected_star_id is not None and 
                        self.gm.selected_star_id != self.gm.simulador.posicion_actual),
-            has_grass=(self.gm.burro.grass_in_basement > 0)
+            has_grass=(self.gm.burro.grass_in_basement > 0),
+            is_on_hypergiant=is_hypergiant
         )
     
     def _save_config(self):
@@ -248,6 +271,7 @@ class GameEventHandler:
         # Guardar la ruta óptima en el game manager
         self.gm.optimal_route = resultado['ruta']
         self.gm.show_optimal_route = True
+        self.gm.optimal_route_with_grass = []  # Limpiar la otra ruta
         
         # Mostrar resultado al usuario
         nombres = obtener_nombres_ruta(self.gm.grafo, resultado['ruta'])
@@ -257,6 +281,128 @@ class GameEventHandler:
         
         self.gm.notification.add(
             f"✅ Ruta óptima: {resultado['estrellas_visitadas']} estrellas\n{ruta_str}",
+            Colors.TEXT_SUCCESS,
+            duration=5000
+        )
+    
+    def _on_optimal_route_grass_click(self):
+        """
+        Callback: Calcular ruta óptima con recarga de pasto (REQUERIMIENTO 2.0).
+        
+        Encuentra la ruta que permite visitar la mayor cantidad de estrellas
+        considerando recarga automática de pasto cuando energía < 50%.
+        """
+        from algorithms.optimal_route_with_grass import encontrar_ruta_optima_con_pasto
+        from algorithms.max_stars_route import obtener_nombres_ruta
+        
+        self.gm.notification.add(
+            "🔍 Calculando ruta con recarga de pasto...",
+            Colors.TEXT_INFO
+        )
+        
+        # Calcular ruta óptima con pasto
+        resultado = encontrar_ruta_optima_con_pasto(
+            self.gm.grafo,
+            self.gm.burro,
+            self.gm.simulador.posicion_actual,
+            verbose=True
+        )
+        
+        # Guardar en el game manager
+        self.gm.optimal_route_with_grass = resultado['ruta']
+        self.gm.show_optimal_route = True
+        self.gm.optimal_route = []  # Limpiar la otra ruta
+        
+        # Mostrar resultado
+        nombres = obtener_nombres_ruta(self.gm.grafo, resultado['ruta'])
+        ruta_str = ' → '.join(nombres[:5])
+        if len(nombres) > 5:
+            ruta_str += f" ... (+{len(nombres)-5} más)"
+        
+        self.gm.notification.add(
+            f"✅ Ruta con pasto: {resultado['estrellas_visitadas']} estrellas, {resultado['pasto_usado']} kg usados\n{ruta_str}",
+            Colors.TEXT_SUCCESS,
+            duration=6000
+        )
+    
+    def _on_intergalactic_travel_click(self):
+        """
+        Callback: Abrir panel de viaje inter-galáctico (REQUERIMIENTO c).
+        
+        Solo disponible cuando el burro está en una hipergigante.
+        """
+        from utils.intergalactic import get_reachable_constellations
+        
+        current_star = self.gm.grafo.obtener_estrella(self.gm.simulador.posicion_actual)
+        
+        if not current_star or not current_star.is_hypergiant:
+            self.gm.notification.add(
+                f"{Icons.DANGER} Debes estar en una hipergigante para viajar inter-galácticamente",
+                Colors.TEXT_DANGER
+            )
+            return
+        
+        # Obtener galaxias alcanzables (≤2 saltos) - pasamos star_id
+        available_galaxies = get_reachable_constellations(
+            self.gm.grafo,
+            self.gm.simulador.posicion_actual  # Usar star_id, no constellation name
+        )
+        
+        if not available_galaxies:
+            self.gm.notification.add(
+                f"{Icons.DANGER} No hay galaxias alcanzables desde aquí",
+                Colors.TEXT_DANGER
+            )
+            return
+        
+        # Mostrar panel de selección
+        self.gm.intergalactic_panel.show(
+            self.gm.simulador.posicion_actual,
+            available_galaxies
+        )
+        self.gm.notification.add(
+            "🌌 Selecciona tu destino inter-galáctico",
+            Colors.TEXT_INFO
+        )
+    
+    def _execute_intergalactic_travel(self):
+        """
+        Ejecuta el viaje inter-galáctico a la estrella seleccionada.
+        """
+        destination_id = self.gm.intergalactic_panel.selected_destination
+        if destination_id is None:
+            return
+        
+        # Obtener estrella de destino
+        destination_star = self.gm.grafo.obtener_estrella(destination_id)
+        if not destination_star:
+            self.gm.notification.add(
+                f"{Icons.DANGER} Estrella de destino no encontrada",
+                Colors.TEXT_DANGER
+            )
+            return
+        
+        # Ejecutar viaje inter-galáctico (recarga energía y pasto, sin coste)
+        self.gm.burro.intergalactic_travel()
+        
+        # Actualizar posición del burro
+        self.gm.simulador.posicion_actual = destination_id
+        
+        # Cerrar panel
+        self.gm.intergalactic_panel.hide()
+        
+        # Actualizar UI
+        self.gm._update_ui()
+        
+        # Reproducir sonido de viaje
+        if hasattr(self.gm, 'sound_manager'):
+            self.gm.sound_manager.play_travel()
+        
+        # Notificación de éxito
+        self.gm.notification.add(
+            f"🌌 ¡Viaje inter-galáctico a {destination_star.label}!\n"
+            f"⚡ Energía: {self.gm.burro.donkey_energy:.1f}% | "
+            f"🌾 Pasto: {self.gm.burro.grass_in_basement:.1f} kg",
             Colors.TEXT_SUCCESS,
             duration=5000
         )

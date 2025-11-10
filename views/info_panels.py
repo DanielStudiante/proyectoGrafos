@@ -126,6 +126,9 @@ class StarInfoPanel:
         
         self.content_x = x + Spacing.PANEL_PADDING
         self.content_y = y + 60
+        
+        # Botón de cerrar (X en la esquina superior derecha)
+        self.close_button_rect = pygame.Rect(x + width - 30, y + 5, 25, 25)
     
     def set_star(self, estrella, distance=None, energy_needed=None, path=None):
         """Establece la estrella a mostrar."""
@@ -140,12 +143,34 @@ class StarInfoPanel:
         self.visible = False
         self.estrella = None
     
+    def handle_click(self, pos):
+        """
+        Maneja clics en el panel.
+        
+        Returns:
+            True si se hizo clic en el botón de cerrar, False en caso contrario
+        """
+        if not self.visible:
+            return False
+        
+        if self.close_button_rect.collidepoint(pos):
+            self.clear()
+            return True
+        
+        return False
+    
     def draw(self, screen):
         """Dibuja el panel."""
         if not self.visible or not self.estrella:
             return
         
         self.panel.draw(screen, self.title_font)
+        
+        # Botón de cerrar (X)
+        pygame.draw.rect(screen, Colors.HEALTH_NEGATIVE, self.close_button_rect, border_radius=3)
+        close_text = self.normal_font.render("✕", True, Colors.TEXT_PRIMARY)
+        close_text_rect = close_text.get_rect(center=self.close_button_rect.center)
+        screen.blit(close_text, close_text_rect)
         
         y = self.content_y
         

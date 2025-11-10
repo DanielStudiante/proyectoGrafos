@@ -42,6 +42,7 @@ def cargar_grafo_desde_json(ruta: str = "data/config.json") -> GrafoConstelacion
                 amount_of_energy=star_data.get('amountOfEnergy', 10.0),
                 health_impact=star_data.get('healthImpact', 0.0),
                 life_time_impact=star_data.get('lifeTimeImpact', 0.0),
+                research_energy_cost=star_data.get('researchEnergyCost', 1.0),
             )
     
     # PASO 2: Crear conexiones solo entre estrellas existentes

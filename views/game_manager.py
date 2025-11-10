@@ -10,12 +10,14 @@ from views.config import (WINDOW_WIDTH, WINDOW_HEIGHT, FPS, TITLE, Colors,
 from views.graph_renderer import GraphRenderer
 from views.panels import DonkeyInfoPanel, StarInfoPanel, ActionsPanel, ReachableStarsPanel
 from views.star_editor import StarEditorPanel
+from views.intergalactic_panel import IntergalacticTravelPanel
 from views.components import Tooltip, Notification
 from views.game_events import GameEventHandler
 from views.game_renderer import GameRenderer
 from backend.simulator import SimuladorViaje
 from algorithms.dijkstra import encontrar_camino_mas_corto
 from utils.config_loader import cargar_grafo_desde_json, crear_burro_desde_json
+from utils.sound_manager import SoundManager
 
 
 class GameManager:
@@ -44,6 +46,9 @@ class GameManager:
         self.grafo = cargar_grafo_desde_json()
         self.burro = crear_burro_desde_json()
         self.simulador = SimuladorViaje(self.grafo, self.burro, posicion_inicial=1)
+        
+        # Gestor de sonidos
+        self.sound_manager = SoundManager(enabled=True)
         
         # Renderizador del grafo
         self.graph_renderer = GraphRenderer(
@@ -84,6 +89,9 @@ class GameManager:
         self.optimal_route = []
         self.show_optimal_route = False
         
+        # Ruta óptima con pasto (REQUERIMIENTO 2.0)
+        self.optimal_route_with_grass = []
+        
         # Actualizar información inicial
         self._update_ui()
     
@@ -107,7 +115,9 @@ class GameManager:
             on_eat=self.event_handler._on_eat_click,
             on_investigate=self.event_handler._on_investigate_click,
             on_config=self.event_handler._on_config_click,
-            on_calculate_route=self.event_handler._on_calculate_route_click
+            on_calculate_route=self.event_handler._on_calculate_route_click,
+            on_optimal_route_grass=self.event_handler._on_optimal_route_grass_click,
+            on_intergalactic_travel=self.event_handler._on_intergalactic_travel_click
         )
         
         # Panel de estrellas alcanzables
@@ -136,6 +146,17 @@ class GameManager:
             editor_height
         )
         self.star_editor.set_grafo(self.grafo)
+        
+        # Panel de viaje inter-galáctico
+        intergalactic_width = 400
+        intergalactic_height = 500
+        self.intergalactic_panel = IntergalacticTravelPanel(
+            (WINDOW_WIDTH - intergalactic_width) // 2,
+            (WINDOW_HEIGHT - intergalactic_height) // 2,
+            intergalactic_width,
+            intergalactic_height
+        )
+        self.intergalactic_panel.set_data(self.grafo, self.burro)
     
     def _update_ui(self):
         """Actualiza todos los elementos de la UI."""
@@ -200,6 +221,16 @@ class GameManager:
         
         # Actualizar notificaciones
         self.notification.update()
+        
+        # Verificar si el burro murió (REQUERIMIENTO b)
+        if not self.burro.alive and self.state != GameState.GAME_OVER:
+            self.state = GameState.GAME_OVER
+            self.sound_manager.play_death()  # Reproducir sonido de muerte
+            self.notification.add(
+                "💀 ¡EL BURRO HA MUERTO! 💀",
+                Colors.TEXT_DANGER,
+                duration=10000
+            )
         
         # Detectar estrella bajo el cursor para tooltip
         self._update_hover_tooltip(mouse_pos)

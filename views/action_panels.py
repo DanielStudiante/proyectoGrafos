@@ -19,7 +19,8 @@ class ActionsPanel:
     """
     
     def __init__(self, x, y, width, height, on_travel=None, on_eat=None, 
-                 on_investigate=None, on_config=None, on_calculate_route=None):
+                 on_investigate=None, on_config=None, on_calculate_route=None,
+                 on_optimal_route_grass=None, on_intergalactic_travel=None):
         self.panel = Panel(x, y, width, height, "🎮 Acciones")
         
         # Fuentes
@@ -32,6 +33,8 @@ class ActionsPanel:
         self.on_investigate = on_investigate
         self.on_config = on_config
         self.on_calculate_route = on_calculate_route
+        self.on_optimal_route_grass = on_optimal_route_grass
+        self.on_intergalactic_travel = on_intergalactic_travel
         
         # Botones
         btn_x = x + (width - ButtonSizes.WIDTH) // 2
@@ -64,18 +67,34 @@ class ActionsPanel:
             "⭐ Máximo de Estrellas", on_calculate_route
         )
         
+        # Botón para ruta óptima con pasto (REQUERIMIENTO 2.0)
+        self.optimal_grass_button = Button(
+            btn_x, btn_y + btn_spacing * 5, ButtonSizes.WIDTH, ButtonSizes.HEIGHT,
+            "🌾 Ruta con Pasto", on_optimal_route_grass
+        )
+        
+        # Botón para viaje inter-galáctico (REQUERIMIENTO c)
+        self.intergalactic_button = Button(
+            btn_x, btn_y + btn_spacing * 6, ButtonSizes.WIDTH, ButtonSizes.HEIGHT,
+            "🌌 Viaje Inter-Galáctico", on_intergalactic_travel
+        )
+        
         self.buttons = [
             self.travel_button,
             self.eat_button,
             self.investigate_button,
             self.config_button,
-            self.calculate_route_button
+            self.calculate_route_button,
+            self.optimal_grass_button,
+            self.intergalactic_button
         ]
     
-    def update(self, mouse_pos, mouse_pressed, can_travel=False, has_grass=True):
+    def update(self, mouse_pos, mouse_pressed, can_travel=False, has_grass=True, 
+               is_on_hypergiant=False):
         """Actualiza el estado de los botones."""
         self.travel_button.set_enabled(can_travel)
         self.eat_button.set_enabled(has_grass)
+        self.intergalactic_button.set_enabled(is_on_hypergiant)
         
         for button in self.buttons:
             button.update(mouse_pos, mouse_pressed)

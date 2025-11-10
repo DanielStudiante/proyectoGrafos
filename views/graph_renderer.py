@@ -69,7 +69,7 @@ class GraphRenderer:
             is_current = (star_id == current_star_id)
             renderer.update(mouse_pos, is_current)
     
-    def draw(self, screen, current_star_id=None, visited_stars=None, optimal_route=None):
+    def draw(self, screen, current_star_id=None, visited_stars=None, optimal_route=None, optimal_route_with_grass=None):
         """
         Dibuja el grafo completo.
         
@@ -77,28 +77,33 @@ class GraphRenderer:
             screen: Superficie de pygame donde dibujar
             current_star_id: ID de la estrella actual (donde está el burro)
             visited_stars: Set de IDs de estrellas ya visitadas
-            optimal_route: Lista de IDs de la ruta óptima (REQUERIMIENTO 1.2)
+            optimal_route: Lista de IDs de la ruta óptima sin pasto (REQUERIMIENTO 1.2)
+            optimal_route_with_grass: Lista de IDs de la ruta óptima con pasto (REQUERIMIENTO 2.0)
         """
         visited_stars = visited_stars or set()
         
         # 1. Conexiones (fondo)
         self._draw_all_connections(screen)
         
-        # 2. Ruta óptima (si está activa) - REQUERIMIENTO 1.2
+        # 2. Ruta óptima sin pasto (cyan) - REQUERIMIENTO 1.2
         if optimal_route and len(optimal_route) > 1:
-            self._draw_optimal_route(screen, optimal_route)
+            self._draw_optimal_route(screen, optimal_route, is_grass_route=False)
         
-        # 3. Camino activo (resaltado)
+        # 3. Ruta óptima con pasto (verde) - REQUERIMIENTO 2.0
+        if optimal_route_with_grass and len(optimal_route_with_grass) > 1:
+            self._draw_optimal_route(screen, optimal_route_with_grass, is_grass_route=True)
+        
+        # 4. Camino activo (resaltado)
         if self.active_path:
             self._draw_active_path(screen)
         
-        # 4. Estrellas (con colores por constelación)
+        # 5. Estrellas (con colores por constelación)
         for star_id, renderer in self.star_renderers.items():
             is_current = (star_id == current_star_id)
             is_visited = star_id in visited_stars
             renderer.draw(screen, is_current, is_visited, self.grafo)
         
-        # 5. Burro (encima de todo)
+        # 6. Burro (encima de todo)
         if current_star_id is not None:
             current_renderer = self.star_renderers.get(current_star_id)
             if current_renderer:
@@ -162,14 +167,22 @@ class GraphRenderer:
                     show_weights=True
                 )
     
-    def _draw_optimal_route(self, screen, route):
+    def _draw_optimal_route(self, screen, route, is_grass_route=False):
         """
-        Dibuja la ruta óptima en un color especial (REQUERIMIENTO 1.2).
+        Dibuja la ruta óptima en un color especial.
         
         Args:
             route: Lista de IDs de estrellas que forman la ruta óptima
+            is_grass_route: Si True, usa color verde (Req. 2.0 con pasto)
+                          Si False, usa color cyan (Req. 1.2 sin pasto)
         """
         from views.config import Colors
+        
+        # Elegir color según el tipo de ruta
+        if is_grass_route:
+            color = Colors.PATH_OPTIMAL_GRASS  # Verde para ruta con pasto (Req. 2.0)
+        else:
+            color = Colors.PATH_OPTIMAL  # Cyan para ruta sin pasto (Req. 1.2)
         
         for i in range(len(route) - 1):
             star1_id = route[i]
@@ -181,10 +194,10 @@ class GraphRenderer:
             if not star1_renderer or not star2_renderer:
                 continue
             
-            # Dibujar línea gruesa en color especial (cyan brillante)
+            # Dibujar línea gruesa en color especial
             pygame.draw.line(
                 screen,
-                Colors.PATH_OPTIMAL,  # Cyan brillante para ruta óptima
+                color,
                 (star1_renderer.screen_x, star1_renderer.screen_y),
                 (star2_renderer.screen_x, star2_renderer.screen_y),
                 6  # Línea más gruesa

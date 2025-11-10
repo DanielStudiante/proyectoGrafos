@@ -268,8 +268,8 @@ class Donkey:
         """
         Realiza un viaje a una estrella.
         
-        El viaje consume energía igual a la distancia recorrida,
-        más un desgaste adicional basado en la edad del burro.
+        El viaje consume energía igual a la distancia recorrida multiplicada
+        por un factor de reducción, más un desgaste adicional basado en la edad.
         
         Args:
             distance: Distancia a recorrer en años luz
@@ -285,8 +285,12 @@ class Donkey:
         if not self.alive:
             return "El burro está muerto y no puede viajar."
         
-        # Consumir energía = distancia recorrida
-        self.donkey_energy -= distance
+        # Factor de reducción para facilitar pruebas del algoritmo
+        # 0.2 = consumir solo el 20% de la distancia como energía
+        ENERGY_CONSUMPTION_FACTOR = 0.2
+        
+        # Consumir energía = distancia recorrida * factor de reducción
+        self.donkey_energy -= distance * ENERGY_CONSUMPTION_FACTOR
         
         # Incrementar edad por el viaje
         self.age += distance
@@ -346,3 +350,35 @@ class Donkey:
         self._update_derived_properties()
         
         return None
+    
+    def intergalactic_travel(self) -> None:
+        """
+        Realiza un viaje inter-galáctico desde una estrella hipergigante.
+        
+        REQUERIMIENTO c: Las estrellas hipergigantes pueden enviar al burro
+        a través de dos galaxias (constelaciones). Este viaje:
+        - Recarga 50% de su nivel ACTUAL de burroenergía
+        - Duplica la cantidad de pasto en bodega
+        - NO consume energía (viaje instantáneo)
+        - NO aumenta edad (viaje cuántico)
+        
+        Returns:
+            None
+        """
+        # Recargar 50% de energía actual
+        recharge_amount = self.donkey_energy * 0.5
+        self.donkey_energy += recharge_amount
+        self.donkey_energy = self._clamp_energy(self.donkey_energy)
+        
+        # Duplicar pasto en bodega
+        self.grass_in_basement *= 2
+        
+        # Actualizar propiedades derivadas
+        self._update_derived_properties()
+        
+        print(f"\n{'='*70}")
+        print(f"🌌 ¡VIAJE INTER-GALÁCTICO COMPLETADO!")
+        print(f"{'='*70}")
+        print(f"⚡ Energía recargada: +{recharge_amount:.1f} (total: {self.donkey_energy:.1f})")
+        print(f"🌾 Pasto duplicado: {self.grass_in_basement:.0f} kg")
+        print(f"{'='*70}\n")

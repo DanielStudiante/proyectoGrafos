@@ -20,6 +20,7 @@ class Estrella:
         amount_of_energy: float = 10.0,  # Energía que otorga
         health_impact: float = 0.0,  # Impacto en la salud (positivo o negativo)
         life_time_impact: float = 0.0,  # Impacto en el tiempo de vida en años luz (positivo=gana, negativo=pierde)
+        research_energy_cost: float = 1.0,  # Energía consumida por hora de investigación
     ):
         # Identificadores
         self.id = id
@@ -42,6 +43,7 @@ class Estrella:
         # Efectos de investigación en la estrella
         self.health_impact = health_impact  # Impacto en energía/salud del burro
         self.life_time_impact = life_time_impact  # Años luz ganados o perdidos
+        self.research_energy_cost = research_energy_cost  # Energía consumida por hora de investigación
         
         # Estado
         self.visitada = False
@@ -114,6 +116,7 @@ class Estrella:
             'amountOfEnergy': self.amount_of_energy,
             'healthImpact': self.health_impact,
             'lifeTimeImpact': self.life_time_impact,
+            'researchEnergyCost': self.research_energy_cost,
             'visitada': self.visitada,
         }
     

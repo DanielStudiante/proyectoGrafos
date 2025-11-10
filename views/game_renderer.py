@@ -69,14 +69,17 @@ class GameRenderer:
         # 5. Editor de estrellas (encima)
         self.gm.star_editor.draw(self.screen)
         
-        # 6. Notificaciones y tooltip
+        # 6. Panel inter-galáctico (encima del editor)
+        self.gm.intergalactic_panel.draw(self.screen)
+        
+        # 7. Notificaciones y tooltip
         self._draw_overlays()
         
-        # 7. Game Over si aplica
+        # 8. Game Over si aplica
         if self.gm.state == GameState.GAME_OVER:
             self._draw_game_over()
         
-        # 8. Actualizar pantalla
+        # 9. Actualizar pantalla
         pygame.display.flip()
     
     def _draw_graph_area(self):
@@ -91,14 +94,16 @@ class GameRenderer:
         """Dibuja el grafo de constelaciones con el burro."""
         visited_stars = set(self.gm.simulador.historial_viaje)
         
-        # Pasar ruta óptima si está activa (REQUERIMIENTO 1.2)
+        # Pasar rutas óptimas si están activas
         optimal_route = self.gm.optimal_route if self.gm.show_optimal_route else None
+        optimal_route_grass = self.gm.optimal_route_with_grass if self.gm.show_optimal_route else None
         
         self.gm.graph_renderer.draw(
             self.screen,
             current_star_id=self.gm.simulador.posicion_actual,
             visited_stars=visited_stars,
-            optimal_route=optimal_route
+            optimal_route=optimal_route,
+            optimal_route_with_grass=optimal_route_grass
         )
     
     def _draw_panels(self):

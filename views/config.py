@@ -48,7 +48,8 @@ class Colors:
     # Conexiones
     CONNECTION = (50, 50, 80)           # Líneas entre estrellas
     CONNECTION_ACTIVE = (100, 150, 255) # Línea del camino
-    PATH_OPTIMAL = (0, 255, 255)        # Cyan brillante para ruta óptima (REQUERIMIENTO 1.2)
+    PATH_OPTIMAL = (0, 255, 255)        # Cyan brillante para ruta óptima sin pasto (REQ 1.2)
+    PATH_OPTIMAL_GRASS = (0, 255, 100)  # Verde brillante para ruta óptima con pasto (REQ 2.0)
     
     # Texto
     TEXT_PRIMARY = (255, 255, 255)      # Blanco

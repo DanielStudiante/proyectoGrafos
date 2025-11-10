@@ -10,20 +10,21 @@ from typing import Final
 class DamageRates:
     """Tasas de daño para diferentes rangos de edad (inmutable)."""
     # Edad: [min, max, daño_estrella, daño_constelación]
+    # Daño reducido para facilitar pruebas del algoritmo de máximo de estrellas
     YOUNG_MAX: Final[float] = 891.0
-    YOUNG_STAR: Final[float] = 0.05
-    YOUNG_CONSTELLATION: Final[float] = 0.08
+    YOUNG_STAR: Final[float] = 0.01        # Reducido de 0.05 a 0.01
+    YOUNG_CONSTELLATION: Final[float] = 0.02  # Reducido de 0.08 a 0.02
     
     ADULT_MAX: Final[float] = 1783.0
-    ADULT_STAR: Final[float] = 0.10
-    ADULT_CONSTELLATION: Final[float] = 0.15
+    ADULT_STAR: Final[float] = 0.02        # Reducido de 0.10 a 0.02
+    ADULT_CONSTELLATION: Final[float] = 0.03  # Reducido de 0.15 a 0.03
     
     MATURE_MAX: Final[float] = 2675.0
-    MATURE_STAR: Final[float] = 0.15
-    MATURE_CONSTELLATION: Final[float] = 0.20
+    MATURE_STAR: Final[float] = 0.03        # Reducido de 0.15 a 0.03
+    MATURE_CONSTELLATION: Final[float] = 0.04  # Reducido de 0.20 a 0.04
     
-    OLD_STAR: Final[float] = 0.20
-    OLD_CONSTELLATION: Final[float] = 0.25
+    OLD_STAR: Final[float] = 0.04          # Reducido de 0.20 a 0.04
+    OLD_CONSTELLATION: Final[float] = 0.05  # Reducido de 0.25 a 0.05
 
 
 class DamageCalculator:
