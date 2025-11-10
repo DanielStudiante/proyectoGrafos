@@ -27,6 +27,12 @@ class IntergalacticTravelPanel:
         self.grafo = None
         self.donkey = None
         
+        # Posición del panel
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        
         # Galaxias alcanzables
         self.available_galaxies = {}  # {nombre: distancia}
         self.selected_galaxy = None
@@ -102,9 +108,9 @@ class IntergalacticTravelPanel:
         
         for i, (galaxy_name, distance) in enumerate(sorted(self.available_galaxies.items())):
             button = Button(
-                self.panel.x + 10,
-                self.panel.y + 80 + y_offset,
-                self.panel.width - 20,
+                self.x + 10,
+                self.y + 80 + y_offset,
+                self.width - 20,
                 25,
                 f"{galaxy_name} ({distance} saltos)"
             )
@@ -130,9 +136,9 @@ class IntergalacticTravelPanel:
         for star in self.destination_stars:
             icon = "⭐" if star['hipergigante'] else "✨"
             button = Button(
-                self.panel.x + 10,
-                self.panel.y + 80 + y_offset,
-                self.panel.width - 20,
+                self.x + 10,
+                self.y + 80 + y_offset,
+                self.width - 20,
                 25,
                 f"{icon} {star['label']}"
             )
@@ -163,7 +169,7 @@ class IntergalacticTravelPanel:
         # Si hay galaxia seleccionada, verificar botón de volver
         if self.selected_galaxy is not None:
             # Área del botón "← Volver a galaxias"
-            back_rect = pygame.Rect(self.panel.x + 10, self.panel.y + 50, 200, 20)
+            back_rect = pygame.Rect(self.x + 10, self.y + 50, 200, 20)
             if back_rect.collidepoint(pos):
                 self.selected_galaxy = None
                 self.selected_destination = None
@@ -202,20 +208,20 @@ class IntergalacticTravelPanel:
             
             # Botón de volver
             back_text = self.font.render("← Volver a galaxias", True, Colors.TEXT_INFO)
-            back_rect = back_text.get_rect(topleft=(self.panel.x + 10, self.panel.y + 50))
+            back_rect = back_text.get_rect(topleft=(self.x + 10, self.y + 50))
             screen.blit(back_text, back_rect)
         
         title_surface = self.title_font.render(title_text, True, Colors.TEXT_TITLE)
-        screen.blit(title_surface, (self.panel.x + 10, self.panel.y + 25))
+        screen.blit(title_surface, (self.x + 10, self.y + 25))
         
         # Información
         if self.selected_destination is not None:
             info_text = f"Destino seleccionado: Estrella #{self.selected_destination}"
             info_surface = self.font.render(info_text, True, Colors.TEXT_SUCCESS)
-            screen.blit(info_surface, (self.panel.x + 10, self.panel.y + self.panel.height - 120))
+            screen.blit(info_surface, (self.x + 10, self.y + self.height - 120))
             
             # Beneficios
-            benefits_y = self.panel.y + self.panel.height - 140
+            benefits_y = self.y + self.height - 140
             benefit_font = pygame.font.Font(None, 16)
             benefits = [
                 "⚡ +50% energía actual",
@@ -224,7 +230,7 @@ class IntergalacticTravelPanel:
             ]
             for i, benefit in enumerate(benefits):
                 text = benefit_font.render(benefit, True, Colors.TEXT_INFO)
-                screen.blit(text, (self.panel.x + 10, benefits_y - (i * 18)))
+                screen.blit(text, (self.x + 10, benefits_y - (i * 18)))
         
         # Botones de acción
         action_font = pygame.font.Font(None, 18)

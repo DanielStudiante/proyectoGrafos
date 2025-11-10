@@ -112,7 +112,7 @@ class GameEventHandler:
         """Actualiza el estado de los paneles con el mouse."""
         # Verificar si estamos en una hipergigante
         current_star = self.gm.grafo.obtener_estrella(self.gm.simulador.posicion_actual)
-        is_hypergiant = current_star.is_hypergiant if current_star else False
+        is_hypergiant = current_star.hipergigante if current_star else False
         
         self.gm.actions_panel.update(
             mouse_pos,
@@ -335,10 +335,11 @@ class GameEventHandler:
         
         current_star = self.gm.grafo.obtener_estrella(self.gm.simulador.posicion_actual)
         
-        if not current_star or not current_star.is_hypergiant:
+        if not current_star or not current_star.hipergigante:
             self.gm.notification.add(
-                f"{Icons.DANGER} Debes estar en una hipergigante para viajar inter-galácticamente",
-                Colors.TEXT_DANGER
+                "⚠️ Debes estar en una hipergigante para viajar inter-galácticamente",
+                Colors.TEXT_DANGER,
+                duration=4000
             )
             return
         
@@ -350,8 +351,9 @@ class GameEventHandler:
         
         if not available_galaxies:
             self.gm.notification.add(
-                f"{Icons.DANGER} No hay galaxias alcanzables desde aquí",
-                Colors.TEXT_DANGER
+                "⚠️ No hay galaxias alcanzables desde aquí",
+                Colors.TEXT_DANGER,
+                duration=4000
             )
             return
         
