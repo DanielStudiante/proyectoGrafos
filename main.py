@@ -4,8 +4,8 @@ Responsabilidad: Interfaz de terminal para el usuario.
 """
 
 from utils.config_loader import cargar_grafo_desde_json, crear_burro_desde_json
-from models.constellation import GrafoConstelaciones
-from models.simulator import SimuladorViaje
+from backend.constellation import GrafoConstelaciones
+from backend.simulator import SimuladorViaje
 
 
 def configurar_efectos_estrella(grafo):

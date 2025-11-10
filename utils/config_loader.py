@@ -4,8 +4,8 @@ Responsabilidad: Cargar datos desde JSON.
 """
 
 import json
-from models.constellation import GrafoConstelaciones
-from models.donkey import Donkey
+from backend.constellation import GrafoConstelaciones
+from backend.donkey import Donkey
 
 
 def cargar_grafo_desde_json(ruta: str = "data/config.json") -> GrafoConstelaciones:
