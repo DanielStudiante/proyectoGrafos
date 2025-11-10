@@ -113,6 +113,14 @@ class GameRenderer:
         self.gm.actions_panel.draw(self.screen)
         self.gm.star_info_panel.draw(self.screen)
         
+        # Panel de control de caminos (REQUERIMIENTO 0.5) - se dibuja encima
+        if self.gm.path_control_panel.visible:
+            self.gm.path_control_panel.draw(self.screen)
+        
+        # Panel de reporte final (REQUERIMIENTO 0.5) - se dibuja encima
+        if self.gm.final_report_panel.visible:
+            self.gm.final_report_panel.draw(self.screen)
+        
         # Leyendas (abajo)
         if self.constellation_legend:
             self.constellation_legend.draw(self.screen)

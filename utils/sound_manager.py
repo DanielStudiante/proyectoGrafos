@@ -91,17 +91,55 @@ class SoundManager:
     def _play_synthetic_death_sound(self):
         """Genera un sonido sintético de muerte usando pygame (sin archivo)."""
         try:
-            # Crear un sonido sintético simple
-            # Frecuencia descendente para simular "muerte"
-            duration = 500  # milisegundos
+            import numpy as np
+            
+            # Parámetros del sonido
             sample_rate = 22050
+            duration = 1.0  # 1 segundo
             
-            # Nota: pygame.sndarray requiere numpy, usamos un approach simple
-            # Si no hay archivo, simplemente imprimimos
-            print("💀 ¡EL BURRO HA MUERTO!")
+            # Generar tono descendente (simula muerte)
+            t = np.linspace(0, duration, int(sample_rate * duration))
             
+            # Frecuencia descendente de 400Hz a 100Hz
+            frequency_start = 400
+            frequency_end = 100
+            frequency = np.linspace(frequency_start, frequency_end, len(t))
+            
+            # Generar onda sinusoidal con frecuencia descendente
+            wave = np.sin(2 * np.pi * frequency * t)
+            
+            # Aplicar envolvente (fade out)
+            envelope = np.linspace(1.0, 0.0, len(t))
+            wave = wave * envelope
+            
+            # Normalizar a 16-bit
+            wave = np.int16(wave * 32767)
+            
+            # Convertir a stereo
+            stereo_wave = np.column_stack((wave, wave))
+            
+            # Crear Sound desde array
+            sound = pygame.sndarray.make_sound(stereo_wave)
+            sound.set_volume(self.volume)
+            sound.play()
+            
+            print("🔊 Reproduciendo sonido de muerte...")
+            
+        except ImportError:
+            # Si no hay numpy, usar beep simple
+            try:
+                # Beep del sistema (Windows)
+                import winsound
+                winsound.Beep(400, 300)  # 400Hz por 300ms
+                winsound.Beep(300, 300)  # 300Hz por 300ms
+                winsound.Beep(200, 500)  # 200Hz por 500ms
+                print("🔊 Sonido de muerte (beep)...")
+            except:
+                print("💀 ¡EL BURRO HA MUERTO!")
+                
         except Exception as e:
             print(f"⚠️  Error generando sonido sintético: {e}")
+            print("💀 ¡EL BURRO HA MUERTO!")
     
     def play_death(self):
         """Reproduce el sonido de muerte del burro."""

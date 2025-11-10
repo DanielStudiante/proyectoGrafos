@@ -98,8 +98,9 @@ def simular_viaje_con_pasto(
     """
     nuevo_estado = estado.copy()
     
-    # Factor de consumo de energía (debe coincidir con backend/donkey.py)
-    ENERGY_CONSUMPTION_FACTOR = 0.2
+    # REQUERIMIENTO 2.0.b: Factor de consumo de energía (debe coincidir con backend/donkey.py)
+    # 0.5 = 50% de la distancia en años luz se consume como energía
+    ENERGY_CONSUMPTION_FACTOR = 0.5
     energia_consumida = distancia * ENERGY_CONSUMPTION_FACTOR
     
     # 1. VIAJAR: Consumir energía

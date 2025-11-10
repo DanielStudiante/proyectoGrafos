@@ -118,7 +118,7 @@ class GraphRenderer:
             if not star1_renderer:
                 continue
             
-            for neighbor_vertex, distance in vertex.get_connections().items():
+            for neighbor_vertex, distance in vertex.get_all_connections().items():
                 neighbor_id = neighbor_vertex.id
                 
                 # Evitar duplicados
@@ -131,13 +131,17 @@ class GraphRenderer:
                 if not star2_renderer:
                     continue
                 
+                # REQUERIMIENTO 0.5: Verificar si el camino está bloqueado
+                is_blocked = vertex.is_edge_blocked(neighbor_id)
+                
                 ConnectionRenderer.draw_connection(
                     screen,
                     star1_renderer,
                     star2_renderer,
                     distance,
                     is_path=False,
-                    show_weights=True
+                    show_weights=True,
+                    is_blocked=is_blocked
                 )
     
     def _draw_active_path(self, screen):

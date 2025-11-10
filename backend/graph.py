@@ -12,14 +12,36 @@ class Vertex:
         self.y = y
         self.constelaciones = constelaciones or []
         self.neighbors = {}  # {Vertex: peso}
+        self.blocked_edges = set()  # IDs de vértices bloqueados (Req 0.5)
     
     def add_neighbor(self, vertex, weight=0):
         """Añade un vecino con un peso."""
         self.neighbors[vertex] = weight
     
     def get_connections(self):
-        """Retorna el diccionario de vecinos."""
+        """Retorna el diccionario de vecinos (solo los no bloqueados)."""
+        # REQUERIMIENTO 0.5: Filtrar conexiones bloqueadas
+        return {
+            vertex: weight 
+            for vertex, weight in self.neighbors.items() 
+            if vertex.id not in self.blocked_edges
+        }
+    
+    def get_all_connections(self):
+        """Retorna TODAS las conexiones (incluyendo bloqueadas)."""
         return self.neighbors
+    
+    def block_edge(self, vertex_id):
+        """Bloquea el camino hacia un vértice (REQUERIMIENTO 0.5)."""
+        self.blocked_edges.add(vertex_id)
+    
+    def unblock_edge(self, vertex_id):
+        """Habilita el camino hacia un vértice (REQUERIMIENTO 0.5)."""
+        self.blocked_edges.discard(vertex_id)
+    
+    def is_edge_blocked(self, vertex_id):
+        """Verifica si el camino está bloqueado (REQUERIMIENTO 0.5)."""
+        return vertex_id in self.blocked_edges
     
     def get_weight(self, vertex):
         """Obtiene el peso de la conexión a un vecino."""

@@ -40,12 +40,8 @@ class TravelManager:
                 print(f"❌ No hay ruta disponible a la estrella {destino}")
             return (False, origen, 0.0)
         
-        if resultado['distancia'] > self.donkey.donkey_energy:
-            if verbose:
-                print(f"❌ Energía insuficiente.")
-                print(f"   Necesitas: {resultado['distancia']:.2f}")
-                print(f"   Tienes: {self.donkey.donkey_energy:.2f}")
-            return (False, origen, 0.0)
+        # ELIMINADA VALIDACIÓN: Permitir viaje aunque no haya energía suficiente
+        # El burro puede morir durante el viaje (Requerimiento 1.2)
         
         # Ejecutar viaje por pasos
         if verbose:
@@ -77,6 +73,7 @@ class TravelManager:
                 is_star=es_misma_constelacion,
                 health_impact=estrella_destino.health_impact,
                 life_time_impact=estrella_destino.life_time_impact,
+                research_energy_cost=estrella_destino.research_energy_cost,
             )
             
             if resultado_viaje:

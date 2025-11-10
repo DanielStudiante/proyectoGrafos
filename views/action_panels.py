@@ -20,7 +20,8 @@ class ActionsPanel:
     
     def __init__(self, x, y, width, height, on_travel=None, on_eat=None, 
                  on_investigate=None, on_config=None, on_calculate_route=None,
-                 on_optimal_route_grass=None, on_intergalactic_travel=None):
+                 on_optimal_route_grass=None, on_intergalactic_travel=None,
+                 on_path_control=None, on_final_report=None):
         self.panel = Panel(x, y, width, height, "🎮 Acciones")
         
         # Fuentes
@@ -35,6 +36,8 @@ class ActionsPanel:
         self.on_calculate_route = on_calculate_route
         self.on_optimal_route_grass = on_optimal_route_grass
         self.on_intergalactic_travel = on_intergalactic_travel
+        self.on_path_control = on_path_control
+        self.on_final_report = on_final_report
         
         # Botones
         btn_x = x + (width - ButtonSizes.WIDTH) // 2
@@ -79,6 +82,18 @@ class ActionsPanel:
             "🌌 Viaje Inter-Galáctico", on_intergalactic_travel
         )
         
+        # Botón para control de caminos (REQUERIMIENTO 0.5)
+        self.path_control_button = Button(
+            btn_x, btn_y + btn_spacing * 7, ButtonSizes.WIDTH, ButtonSizes.HEIGHT,
+            "🛡️ Control de Caminos", on_path_control
+        )
+        
+        # Botón para reporte final (REQUERIMIENTO 0.5)
+        self.final_report_button = Button(
+            btn_x, btn_y + btn_spacing * 8, ButtonSizes.WIDTH, ButtonSizes.HEIGHT,
+            "📊 Reporte", on_final_report
+        )
+        
         self.buttons = [
             self.travel_button,
             self.eat_button,
@@ -86,7 +101,9 @@ class ActionsPanel:
             self.config_button,
             self.calculate_route_button,
             self.optimal_grass_button,
-            self.intergalactic_button
+            self.intergalactic_button,
+            self.path_control_button,
+            self.final_report_button
         ]
     
     def update(self, mouse_pos, mouse_pressed, can_travel=False, has_grass=True, 

@@ -50,6 +50,14 @@ class GameEventHandler:
         
         elif event.type == pygame.MOUSEBUTTONDOWN:
             self._handle_mouse_button(event, mouse_pos)
+        
+        elif event.type == pygame.MOUSEWHEEL:
+            # Delegar scroll al panel de reporte final si está visible (prioridad máxima)
+            if self.gm.final_report_panel.visible:
+                self.gm.final_report_panel.handle_event(event)
+            # Delegar scroll al panel de control de caminos si está visible
+            elif self.gm.path_control_panel.visible:
+                self.gm.path_control_panel.handle_event(event)
     
     def _handle_keyboard(self, event):
         """Maneja eventos de teclado."""
@@ -69,6 +77,16 @@ class GameEventHandler:
     
     def _handle_left_click(self, mouse_pos):
         """Maneja click izquierdo."""
+        # Prioridad máxima al panel de reporte final (REQUERIMIENTO 0.5)
+        if self.gm.final_report_panel.visible:
+            if self.gm.final_report_panel.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'pos': mouse_pos})):
+                return  # Evento manejado por el panel
+        
+        # Prioridad al panel de control de caminos (REQUERIMIENTO 0.5)
+        if self.gm.path_control_panel.visible:
+            if self.gm.path_control_panel.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'pos': mouse_pos})):
+                return  # Evento manejado por el panel
+        
         # Prioridad al panel inter-galáctico si está visible
         if self.gm.intergalactic_panel.visible:
             result = self.gm.intergalactic_panel.handle_click(mouse_pos)
@@ -162,16 +180,19 @@ class GameEventHandler:
             )
             return
         
-        # Verificar energía
-        if resultado['distancia'] > self.gm.burro.donkey_energy:
-            self.gm.notification.add(
-                f"{Icons.DANGER} Energía insuficiente: "
-                f"{self.gm.burro.donkey_energy:.1f}/{resultado['distancia']:.1f}",
-                Colors.TEXT_DANGER
-            )
-            return
+        # Verificar energía (ADVERTENCIA pero permitir viaje mortal)
+        energia_insuficiente = resultado['distancia'] > self.gm.burro.donkey_energy
         
-        # Realizar viaje
+        if energia_insuficiente:
+            self.gm.notification.add(
+                f"⚠️ ¡PELIGRO! Energía insuficiente: "
+                f"{self.gm.burro.donkey_energy:.1f}/{resultado['distancia']:.1f} - El burro puede morir",
+                Colors.TEXT_DANGER,
+                duration=5000
+            )
+            # NO retornar - permitir que continúe el viaje y muera
+        
+        # Realizar viaje (puede resultar en muerte)
         exito = self.gm.simulador.viajar_a(self.gm.selected_star_id, verbose=False)
         
         if exito:
@@ -407,6 +428,43 @@ class GameEventHandler:
             f"🌾 Pasto: {self.gm.burro.grass_in_basement:.1f} kg",
             Colors.TEXT_SUCCESS,
             duration=5000
+        )
+    
+    def _on_path_control_click(self):
+        """
+        Callback: Abrir panel de control de caminos (REQUERIMIENTO 0.5).
+        
+        Permite a los científicos bloquear/habilitar caminos debido a
+        cometas y meteoritos.
+        """
+        self.gm.path_control_panel.toggle_visibility()
+        
+        if self.gm.path_control_panel.visible:
+            self.gm.notification.add(
+                "🛡️ Panel de control de caminos abierto",
+                Colors.TEXT_INFO,
+                duration=3000
+            )
+        else:
+            self.gm.notification.add(
+                "🛡️ Panel cerrado",
+                Colors.TEXT_INFO,
+                duration=2000
+            )
+    
+    def _on_final_report_click(self):
+        """
+        Callback: Mostrar reporte final del viaje (REQUERIMIENTO 0.5).
+        
+        Muestra todas las estrellas visitadas, galaxias, consumo de pasto
+        y tiempo de investigación.
+        """
+        self.gm.final_report_panel.show(self.gm.simulador)
+        
+        self.gm.notification.add(
+            "📊 Reporte del viaje generado",
+            Colors.TEXT_SUCCESS,
+            duration=3000
         )
     
     def _debug_travel(self, resultado):

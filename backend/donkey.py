@@ -183,7 +183,8 @@ class Donkey:
         time_to_eat_kg: float = 0,
         time_of_stance: float = 0,
         health_impact: float = 0,
-        life_time_impact: float = 0
+        life_time_impact: float = 0,
+        research_energy_cost: float = 0
     ) -> Optional[str]:
         """
         El burro permanece en una estrella para investigar.
@@ -222,7 +223,14 @@ class Donkey:
         # Aplicar efectos de la investigación
         print(f"⏱️ Tiempo de investigación: {time_investigate:.1f} horas")
         
-        # Efectos en la salud/energía
+        # REQUERIMIENTO 2.0: Consumir energía durante la investigación
+        # "Y" cantidad de energía por cada "X" tiempo de investigación
+        if research_energy_cost > 0:
+            energia_consumida = research_energy_cost * time_investigate
+            self.donkey_energy -= energia_consumida
+            print(f"🔬 Energía consumida investigando: {energia_consumida:.1f} ({research_energy_cost:.1f} × {time_investigate:.1f}h)")
+        
+        # Efectos en la salud/energía (healthImpact)
         if health_impact != 0:
             self.donkey_energy += health_impact
             if health_impact > 0:
@@ -235,12 +243,15 @@ class Donkey:
         
         # Efectos en el tiempo de vida
         if life_time_impact != 0:
-            self.age -= life_time_impact  # Restamos porque ganar tiempo = reducir edad
-            if life_time_impact > 0:
-                print(f"⏰ ¡Experimento exitoso! Ganó {life_time_impact:.1f} años luz de vida")
+            # Convención: NEGATIVO = malo (envejece), POSITIVO = bueno (rejuvenece)
+            # Si life_time_impact < 0: pierde años de vida (se hace más viejo, age aumenta)
+            # Si life_time_impact > 0: gana años de vida (se hace más joven, age disminuye)
+            self.age -= life_time_impact  # Restamos porque positivo = ganar = reducir edad
+            if life_time_impact > 0:  # Valores positivos rejuvenecen (disminuyen age)
+                print(f"⏰ ¡Experimento exitoso! Rejuveneció {life_time_impact:.1f} años luz de vida")
                 print(f"   Nueva edad efectiva: {self.age:.1f} años luz")
-            else:
-                print(f"⚠️ La investigación consumió {abs(life_time_impact):.1f} años luz de vida")
+            else:  # Valores negativos envejecen (aumentan age)
+                print(f"⚠️ La investigación envejeció {abs(life_time_impact):.1f} años luz de vida")
                 print(f"   Nueva edad: {self.age:.1f} años luz")
         
         # Verificar si sigue vivo después de los efectos
@@ -263,7 +274,8 @@ class Donkey:
         time_of_stance: float = 0,
         is_star: bool = True,
         health_impact: float = 0,
-        life_time_impact: float = 0
+        life_time_impact: float = 0,
+        research_energy_cost: float = 0
     ) -> Optional[str]:
         """
         Realiza un viaje a una estrella.
@@ -285,14 +297,15 @@ class Donkey:
         if not self.alive:
             return "El burro está muerto y no puede viajar."
         
-        # Factor de reducción para facilitar pruebas del algoritmo
-        # 0.2 = consumir solo el 20% de la distancia como energía
-        ENERGY_CONSUMPTION_FACTOR = 0.2
+        # REQUERIMIENTO 2.0.b: La distancia en años luz consume energía
+        # Factor de consumo: 0.5 = 50% de la distancia (balance entre realismo y jugabilidad)
+        # Ejemplo: viajar 20 años luz consume 10% de energía
+        ENERGY_CONSUMPTION_FACTOR = 0.5
         
-        # Consumir energía = distancia recorrida * factor de reducción
+        # Consumir energía = distancia recorrida * factor de consumo
         self.donkey_energy -= distance * ENERGY_CONSUMPTION_FACTOR
         
-        # Incrementar edad por el viaje
+        # REQUERIMIENTO 2.0.b: Incrementar edad por la distancia en años luz
         self.age += distance
         
         # Aplicar desgaste adicional por edad
@@ -314,7 +327,7 @@ class Donkey:
         
         # Investigar la estrella de destino si aplica
         if is_star:
-            return self.stay_of_star(time_to_eat_kg, time_of_stance, health_impact, life_time_impact)
+            return self.stay_of_star(time_to_eat_kg, time_of_stance, health_impact, life_time_impact, research_energy_cost)
         
         return None
 

@@ -23,6 +23,13 @@ class SimuladorViaje:
         self.historial_viaje = [posicion_inicial]
         self.distancia_total = 0.0
         self.travel_manager = TravelManager(grafo, donkey)
+        
+        # REQUERIMIENTO 0.5: Tracking detallado del viaje para el reporte final
+        self.viaje_log = []  # Lista de eventos del viaje
+        self.pasto_consumido_por_estrella = {}  # {star_id: kg_consumidos}
+        self.tiempo_investigacion_por_estrella = {}  # {star_id: horas}
+        self.constelaciones_visitadas = set()  # Conjunto de nombres de constelaciones
+        self.inicio_viaje = None  # Timestamp del inicio
     
     def obtener_estrella_actual(self) -> Estrella:
         """Obtiene la estrella donde está el burro actualmente."""
@@ -86,6 +93,13 @@ class SimuladorViaje:
         """
         Ejecuta un viaje completo a una estrella destino.
         """
+        # REQUERIMIENTO 0.5: Registrar el evento de viaje
+        import time
+        if self.inicio_viaje is None:
+            self.inicio_viaje = time.time()
+        
+        pasto_antes = self.donkey.grass_in_basement
+        
         exito, nueva_posicion, distancia = self.travel_manager.viajar_a(
             self.posicion_actual,
             destino_id,
@@ -96,6 +110,30 @@ class SimuladorViaje:
             self.posicion_actual = nueva_posicion
             self.historial_viaje.append(nueva_posicion)
             self.distancia_total += distancia
+            
+            # Registrar pasto consumido
+            pasto_despues = self.donkey.grass_in_basement
+            pasto_consumido = pasto_antes - pasto_despues
+            if pasto_consumido > 0:
+                if nueva_posicion not in self.pasto_consumido_por_estrella:
+                    self.pasto_consumido_por_estrella[nueva_posicion] = 0
+                self.pasto_consumido_por_estrella[nueva_posicion] += pasto_consumido
+            
+            # Registrar constelaciones visitadas
+            estrella = self.grafo.obtener_estrella(nueva_posicion)
+            if estrella:
+                for const in estrella.constelaciones:
+                    self.constelaciones_visitadas.add(const)
+            
+            # Log del evento
+            self.viaje_log.append({
+                'tipo': 'viaje',
+                'desde': self.historial_viaje[-2] if len(self.historial_viaje) > 1 else self.posicion_actual,
+                'hasta': nueva_posicion,
+                'distancia': distancia,
+                'energia_restante': self.donkey.donkey_energy,
+                'timestamp': time.time()
+            })
         
         return exito
     
@@ -126,6 +164,8 @@ class SimuladorViaje:
             tiempo_investigacion: Tiempo de investigación en horas. 
                                  Si es None, usa el stayDuration de la estrella.
         """
+        import time
+        
         estrella = self.obtener_estrella_actual()
         
         # Usar el tiempo de estadía definido en la estrella si no se especifica
@@ -145,7 +185,22 @@ class SimuladorViaje:
             time_of_stance=tiempo_investigacion,
             health_impact=estrella.health_impact,
             life_time_impact=estrella.life_time_impact,
+            research_energy_cost=estrella.research_energy_cost,
         )
+        
+        # REQUERIMIENTO 0.5: Registrar tiempo de investigación
+        if self.posicion_actual not in self.tiempo_investigacion_por_estrella:
+            self.tiempo_investigacion_por_estrella[self.posicion_actual] = 0
+        self.tiempo_investigacion_por_estrella[self.posicion_actual] += tiempo_investigacion
+        
+        # Log del evento
+        self.viaje_log.append({
+            'tipo': 'investigacion',
+            'estrella': self.posicion_actual,
+            'tiempo': tiempo_investigacion,
+            'energia_restante': self.donkey.donkey_energy,
+            'timestamp': time.time()
+        })
         
         if resultado:
             print(f"   ❌ {resultado}")

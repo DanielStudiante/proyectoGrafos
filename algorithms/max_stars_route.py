@@ -67,8 +67,9 @@ def simular_viaje(estado: EstadoBurro, distancia: float, estrella_destino) -> Op
     """
     nuevo_estado = estado.copy()
     
-    # Factor de reducción de consumo de energía (debe coincidir con backend/donkey.py)
-    ENERGY_CONSUMPTION_FACTOR = 0.2
+    # REQUERIMIENTO 2.0.b: Factor de consumo de energía (debe coincidir con backend/donkey.py)
+    # 0.5 = 50% de la distancia en años luz se consume como energía
+    ENERGY_CONSUMPTION_FACTOR = 0.5
     energia_consumida = distancia * ENERGY_CONSUMPTION_FACTOR
     
     # Verificar si puede viajar

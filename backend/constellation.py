@@ -134,3 +134,70 @@ class GrafoConstelaciones(Graph):
             id for id, estrella in self.estrellas.items()
             if estrella.hipergigante
         ]
+    
+    def bloquear_camino(self, from_id: int, to_id: int) -> bool:
+        """
+        Bloquea el camino entre dos estrellas (REQUERIMIENTO 0.5).
+        
+        Args:
+            from_id: ID de la estrella origen
+            to_id: ID de la estrella destino
+            
+        Returns:
+            True si se bloqueó exitosamente, False si no existe el camino
+        """
+        vertex_from = self.get_vertex(from_id)
+        vertex_to = self.get_vertex(to_id)
+        
+        if vertex_from and vertex_to and vertex_to in vertex_from.neighbors:
+            vertex_from.block_edge(to_id)
+            return True
+        return False
+    
+    def habilitar_camino(self, from_id: int, to_id: int) -> bool:
+        """
+        Habilita el camino entre dos estrellas (REQUERIMIENTO 0.5).
+        
+        Args:
+            from_id: ID de la estrella origen
+            to_id: ID de la estrella destino
+            
+        Returns:
+            True si se habilitó exitosamente, False si no existe el camino
+        """
+        vertex_from = self.get_vertex(from_id)
+        vertex_to = self.get_vertex(to_id)
+        
+        if vertex_from and vertex_to and vertex_to in vertex_from.neighbors:
+            vertex_from.unblock_edge(to_id)
+            return True
+        return False
+    
+    def esta_camino_bloqueado(self, from_id: int, to_id: int) -> bool:
+        """
+        Verifica si el camino está bloqueado (REQUERIMIENTO 0.5).
+        
+        Args:
+            from_id: ID de la estrella origen
+            to_id: ID de la estrella destino
+            
+        Returns:
+            True si está bloqueado, False si está habilitado
+        """
+        vertex_from = self.get_vertex(from_id)
+        if vertex_from:
+            return vertex_from.is_edge_blocked(to_id)
+        return False
+    
+    def obtener_caminos_bloqueados(self) -> List[tuple]:
+        """
+        Obtiene lista de todos los caminos bloqueados.
+        
+        Returns:
+            Lista de tuplas (from_id, to_id) de caminos bloqueados
+        """
+        bloqueados = []
+        for vertex_id, vertex in self.graph.items():
+            for blocked_id in vertex.blocked_edges:
+                bloqueados.append((vertex_id, blocked_id))
+        return bloqueados

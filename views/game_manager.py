@@ -11,6 +11,8 @@ from views.graph_renderer import GraphRenderer
 from views.panels import DonkeyInfoPanel, StarInfoPanel, ActionsPanel, ReachableStarsPanel
 from views.star_editor import StarEditorPanel
 from views.intergalactic_panel import IntergalacticTravelPanel
+from views.path_control_panel import PathControlPanel
+from views.final_report_panel import FinalReportPanel
 from views.components import Tooltip, Notification
 from views.game_events import GameEventHandler
 from views.game_renderer import GameRenderer
@@ -117,7 +119,9 @@ class GameManager:
             on_config=self.event_handler._on_config_click,
             on_calculate_route=self.event_handler._on_calculate_route_click,
             on_optimal_route_grass=self.event_handler._on_optimal_route_grass_click,
-            on_intergalactic_travel=self.event_handler._on_intergalactic_travel_click
+            on_intergalactic_travel=self.event_handler._on_intergalactic_travel_click,
+            on_path_control=self.event_handler._on_path_control_click,
+            on_final_report=self.event_handler._on_final_report_click
         )
         
         # Panel de estrellas alcanzables
@@ -157,6 +161,27 @@ class GameManager:
             intergalactic_height
         )
         self.intergalactic_panel.set_data(self.grafo, self.burro)
+        
+        # Panel de control de caminos (REQUERIMIENTO 0.5)
+        path_control_width = 450
+        path_control_height = 600
+        self.path_control_panel = PathControlPanel(
+            (WINDOW_WIDTH - path_control_width) // 2,
+            (WINDOW_HEIGHT - path_control_height) // 2,
+            path_control_width,
+            path_control_height,
+            self.grafo
+        )
+        
+        # Panel de reporte final (REQUERIMIENTO 0.5)
+        report_width = 700
+        report_height = 600
+        self.final_report_panel = FinalReportPanel(
+            (WINDOW_WIDTH - report_width) // 2,
+            (WINDOW_HEIGHT - report_height) // 2,
+            report_width,
+            report_height
+        )
     
     def _update_ui(self):
         """Actualiza todos los elementos de la UI."""
@@ -201,10 +226,15 @@ class GameManager:
         )
         
         if resultado and resultado['existe']:
+            # REQUERIMIENTO 2.0.b: Calcular energía real necesaria
+            # Factor: 0.5 = 50% de la distancia en años luz se consume como energía
+            ENERGY_CONSUMPTION_FACTOR = 0.5
+            energia_real = resultado['distancia'] * ENERGY_CONSUMPTION_FACTOR
+            
             self.star_info_panel.set_star(
                 estrella,
                 distance=resultado['distancia'],
-                energy_needed=resultado['distancia'],
+                energy_needed=energia_real,
                 path=resultado['camino']
             )
             self.graph_renderer.set_active_path(resultado['camino'])
