@@ -35,7 +35,28 @@ class GrafoConstelaciones(Graph):
         health_impact: float = 0.0,
         life_time_impact: float = 0.0,
     ) -> Estrella:
-        """Agrega una estrella al grafo."""
+        """
+        Agrega una estrella al grafo.
+        Si la estrella ya existe, acumula las constelaciones nuevas.
+        """
+        # Si la estrella ya existe, solo agregar constelaciones nuevas
+        if id in self.estrellas:
+            estrella_existente = self.estrellas[id]
+            
+            # Acumular constelaciones (sin duplicados)
+            for const in (constelaciones or []):
+                if const not in estrella_existente.constelaciones:
+                    estrella_existente.constelaciones.append(const)
+                
+                # Actualizar también el diccionario de constelaciones
+                if const not in self.constelaciones:
+                    self.constelaciones[const] = []
+                if id not in self.constelaciones[const]:
+                    self.constelaciones[const].append(id)
+            
+            return estrella_existente
+        
+        # Si es nueva, crear la estrella
         # Crear vértice en el grafo (para algoritmos)
         self.add_vertex(id, x, y, constelaciones)
         
@@ -46,7 +67,7 @@ class GrafoConstelaciones(Graph):
             x=x,
             y=y,
             radius=radius,
-            constelaciones=constelaciones,
+            constelaciones=constelaciones or [],
             hipergigante=hipergigante,
             time_to_eat=time_to_eat,
             stay_duration=stay_duration,
@@ -76,6 +97,27 @@ class GrafoConstelaciones(Graph):
     def listar_constelaciones(self) -> List[str]:
         """Lista todas las constelaciones."""
         return list(self.constelaciones.keys())
+    
+    def obtener_color_constelacion(self, nombre_constelacion: str) -> int:
+        """
+        Obtiene el índice de color para una constelación.
+        Retorna un número entre 0-9 para mapear a la paleta de colores.
+        """
+        constelaciones_ordenadas = sorted(self.constelaciones.keys())
+        try:
+            return constelaciones_ordenadas.index(nombre_constelacion) % 10
+        except ValueError:
+            return 0
+    
+    def estrella_tiene_multiples_constelaciones(self, star_id: int) -> bool:
+        """
+        Verifica si una estrella pertenece a más de una constelación.
+        Según requerimiento: debe resaltarse en ROJO.
+        """
+        estrella = self.obtener_estrella(star_id)
+        if estrella:
+            return len(estrella.constelaciones) > 1
+        return False
     
     def obtener_estrellas_activas(self) -> List[int]:
         """Retorna solo las estrellas activas."""

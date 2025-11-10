@@ -58,6 +58,9 @@ class GameManager:
         # Renderer
         self.renderer = GameRenderer(self.screen, self)
         
+        # Actualizar leyendas después de cargar el grafo
+        self.renderer.update_legends()
+        
         # Paneles UI
         self._create_panels()
         
@@ -76,6 +79,10 @@ class GameManager:
         # Estado de interacción
         self.selected_star_id = None
         self.hovered_star_id = None
+        
+        # Ruta óptima (REQUERIMIENTO 1.2)
+        self.optimal_route = []
+        self.show_optimal_route = False
         
         # Actualizar información inicial
         self._update_ui()
@@ -99,7 +106,8 @@ class GameManager:
             on_travel=self.event_handler._on_travel_click,
             on_eat=self.event_handler._on_eat_click,
             on_investigate=self.event_handler._on_investigate_click,
-            on_config=self.event_handler._on_config_click
+            on_config=self.event_handler._on_config_click,
+            on_calculate_route=self.event_handler._on_calculate_route_click
         )
         
         # Panel de estrellas alcanzables

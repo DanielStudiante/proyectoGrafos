@@ -3,11 +3,15 @@ Constantes y configuración para la interfaz gráfica.
 Centraliza todos los valores de configuración para fácil mantenimiento.
 """
 
-# Ventana
+# Ventana - MÍNIMO 200um x 200um según requerimiento
 WINDOW_WIDTH = 1400
 WINDOW_HEIGHT = 900
 FPS = 60
 TITLE = "🐴 Burro Científico - Explorador de Constelaciones"
+
+# Dimensiones del tablero (unidades de medida)
+BOARD_WIDTH_UM = 200  # Unidades de medida mínimas
+BOARD_HEIGHT_UM = 200  # Unidades de medida mínimas
 
 # Colores (paleta profesional)
 class Colors:
@@ -24,10 +28,27 @@ class Colors:
     STAR_CURRENT = (100, 200, 255)      # Azul brillante
     STAR_HOVER = (255, 100, 100)        # Rojo al hover
     STAR_GLOW = (255, 255, 150)         # Brillo
+    STAR_MULTI_CONSTELLATION = (255, 50, 50)  # ROJO para múltiples constelaciones
+    
+    # Colores por constelación (paleta distintiva)
+    # Cada constelación tiene su propio color según requerimiento
+    CONSTELLATION_COLORS = {
+        0: (100, 150, 255),   # Azul
+        1: (255, 100, 150),   # Rosa
+        2: (150, 255, 100),   # Verde
+        3: (255, 200, 100),   # Naranja
+        4: (200, 100, 255),   # Morado
+        5: (100, 255, 255),   # Cyan
+        6: (255, 255, 100),   # Amarillo
+        7: (255, 150, 100),   # Coral
+        8: (150, 100, 255),   # Violeta
+        9: (100, 255, 150),   # Verde agua
+    }
     
     # Conexiones
     CONNECTION = (50, 50, 80)           # Líneas entre estrellas
     CONNECTION_ACTIVE = (100, 150, 255) # Línea del camino
+    PATH_OPTIMAL = (0, 255, 255)        # Cyan brillante para ruta óptima (REQUERIMIENTO 1.2)
     
     # Texto
     TEXT_PRIMARY = (255, 255, 255)      # Blanco
@@ -35,6 +56,8 @@ class Colors:
     TEXT_TITLE = (255, 215, 0)          # Dorado
     TEXT_DANGER = (255, 100, 100)       # Rojo
     TEXT_SUCCESS = (100, 255, 100)      # Verde
+    TEXT_INFO = (100, 200, 255)         # Azul info
+    TEXT_HIGHLIGHT = (255, 255, 0)      # Amarillo resaltado
     
     # UI Elements
     BUTTON_BG = (40, 40, 70)            # Fondo botón

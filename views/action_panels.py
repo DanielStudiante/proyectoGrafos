@@ -19,7 +19,7 @@ class ActionsPanel:
     """
     
     def __init__(self, x, y, width, height, on_travel=None, on_eat=None, 
-                 on_investigate=None, on_config=None):
+                 on_investigate=None, on_config=None, on_calculate_route=None):
         self.panel = Panel(x, y, width, height, "🎮 Acciones")
         
         # Fuentes
@@ -31,6 +31,7 @@ class ActionsPanel:
         self.on_eat = on_eat
         self.on_investigate = on_investigate
         self.on_config = on_config
+        self.on_calculate_route = on_calculate_route
         
         # Botones
         btn_x = x + (width - ButtonSizes.WIDTH) // 2
@@ -57,11 +58,18 @@ class ActionsPanel:
             "⚙️ Configurar", on_config
         )
         
+        # Botón para calcular ruta óptima (REQUERIMIENTO 1.2)
+        self.calculate_route_button = Button(
+            btn_x, btn_y + btn_spacing * 4, ButtonSizes.WIDTH, ButtonSizes.HEIGHT,
+            "⭐ Máximo de Estrellas", on_calculate_route
+        )
+        
         self.buttons = [
             self.travel_button,
             self.eat_button,
             self.investigate_button,
-            self.config_button
+            self.config_button,
+            self.calculate_route_button
         ]
     
     def update(self, mouse_pos, mouse_pressed, can_travel=False, has_grass=True):

@@ -38,16 +38,41 @@ class StarRenderer:
         return max(GraphScale.MIN_STAR_RADIUS, 
                    min(GraphScale.MAX_STAR_RADIUS, base_radius))
     
-    def get_color(self, is_current=False, is_visited=False):
-        """Determina el color de la estrella según su estado."""
+    def get_color(self, is_current=False, is_visited=False, grafo=None):
+        """
+        Determina el color de la estrella según su estado y constelación.
+        
+        REQUERIMIENTO: Cada constelación debe tener un color diferente.
+        Si una estrella pertenece a varias constelaciones, se resalta en ROJO.
+        """
+        # Prioridad 1: Estrella actual (donde está el burro)
         if is_current:
             return Colors.STAR_CURRENT
+        
+        # Prioridad 2: Hover (interacción del usuario)
         elif self.hover:
             return Colors.STAR_HOVER
+        
+        # Prioridad 3: Múltiples constelaciones - ROJO (REQUERIMIENTO)
+        elif grafo and len(self.estrella.constelaciones) > 1:
+            return Colors.STAR_MULTI_CONSTELLATION
+        
+        # Prioridad 4: Visitada
         elif is_visited:
             return Colors.STAR_VISITED
+        
+        # Prioridad 5: Color por constelación (REQUERIMIENTO)
+        elif grafo and self.estrella.constelaciones:
+            # Obtener el color de la primera constelación
+            primera_constelacion = self.estrella.constelaciones[0]
+            color_index = grafo.obtener_color_constelacion(primera_constelacion)
+            return Colors.CONSTELLATION_COLORS.get(color_index, Colors.STAR_NORMAL)
+        
+        # Prioridad 6: Hipergigante (fallback)
         elif self.estrella.hipergigante:
             return Colors.STAR_HYPERGIANT
+        
+        # Default
         else:
             return Colors.STAR_NORMAL
     
@@ -73,9 +98,9 @@ class StarRenderer:
         else:
             self.glow_alpha = max(0, self.glow_alpha - 15)
     
-    def draw(self, screen, is_current=False, is_visited=False):
-        """Dibuja la estrella."""
-        color = self.get_color(is_current, is_visited)
+    def draw(self, screen, is_current=False, is_visited=False, grafo=None):
+        """Dibuja la estrella con su color según constelación."""
+        color = self.get_color(is_current, is_visited, grafo)
         
         # Calcular radio con pulso
         pulse_scale = 1.0

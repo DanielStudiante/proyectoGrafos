@@ -13,11 +13,7 @@
             },
             {
               "starId": 4,
-              "distance": 87
-            },
-            {
-              "starId": 5,
-              "distance": 95
+              "distance": 70
             }
           ],
           "radius": 0.4,
@@ -41,12 +37,12 @@
               "distance": 85
             },
             {
-              "starId": 7,
-              "distance": 45
-            },
-            {
               "starId": 3,
               "distance": 17
+            },
+            {
+              "starId": 5,
+              "distance": 55
             }
           ],
           "radius": 0.2,
@@ -66,16 +62,16 @@
           "label": "Alpha53",
           "linkedTo": [
             {
-              "starId": 5,
-              "distance": 86
-            },
-            {
               "starId": 2,
               "distance": 17
             },
             {
-              "starId": 9,
-              "distance": 15
+              "starId": 4,
+              "distance": 65
+            },
+            {
+              "starId": 12,
+              "distance": 95
             }
           ],
           "radius": 1,
@@ -89,6 +85,64 @@
             "y": 43
           },
           "hypergiant": true
+        },
+        {
+          "id": 4,
+          "label": "Gamma7",
+          "linkedTo": [
+            {
+              "starId": 1,
+              "distance": 70
+            },
+            {
+              "starId": 3,
+              "distance": 65
+            },
+            {
+              "starId": 5,
+              "distance": 50
+            }
+          ],
+          "radius": 0.5,
+          "timeToEat": 2,
+          "stayDuration": 5.0,
+          "amountOfEnergy": 2,
+          "healthImpact": 1.5,
+          "lifeTimeImpact": 8,
+          "coordenates": {
+            "x": 60,
+            "y": 80
+          },
+          "hypergiant": false
+        },
+        {
+          "id": 5,
+          "label": "Delta9",
+          "linkedTo": [
+            {
+              "starId": 2,
+              "distance": 55
+            },
+            {
+              "starId": 4,
+              "distance": 50
+            },
+            {
+              "starId": 6,
+              "distance": 40
+            }
+          ],
+          "radius": 0.3,
+          "timeToEat": 2,
+          "stayDuration": 4.0,
+          "amountOfEnergy": 1,
+          "healthImpact": 2.0,
+          "lifeTimeImpact": 7,
+          "coordenates": {
+            "x": 95,
+            "y": 25
+          },
+          "hypergiant": false
         }
       ]
     },
@@ -96,20 +150,39 @@
       "name": "Constelación de la Araña",
       "starts": [
         {
+          "id": 3,
+          "label": "Alpha53",
+          "linkedTo": [
+            {
+              "starId": 12,
+              "distance": 95
+            }
+          ],
+          "radius": 1,
+          "timeToEat": 1,
+          "stayDuration": 8.0,
+          "amountOfEnergy": 3,
+          "coordenates": {
+            "x": 75,
+            "y": 43
+          },
+          "hypergiant": true
+        },
+        {
           "id": 12,
           "label": "Beta178",
           "linkedTo": [
             {
+              "starId": 3,
+              "distance": 95
+            },
+            {
+              "starId": 13,
+              "distance": 60
+            },
+            {
               "starId": 14,
-              "distance": 120
-            },
-            {
-              "starId": 17,
-              "distance": 87
-            },
-            {
-              "starId": 11,
-              "distance": 101
+              "distance": 75
             }
           ],
           "radius": 0.6,
@@ -129,12 +202,16 @@
           "label": "Gama23",
           "linkedTo": [
             {
-              "starId": 15,
-              "distance": 120
+              "starId": 12,
+              "distance": 60
             },
             {
-              "starId": 17,
+              "starId": 14,
               "distance": 45
+            },
+            {
+              "starId": 15,
+              "distance": 80
             }
           ],
           "radius": 0.8,
@@ -150,23 +227,293 @@
           "hypergiant": true
         },
         {
-          "id": 3,
-          "label": "Alpha53",
+          "id": 14,
+          "label": "Epsilon5",
           "linkedTo": [
             {
               "starId": 12,
-              "distance": 15
+              "distance": 75
+            },
+            {
+              "starId": 13,
+              "distance": 45
             }
           ],
-          "radius": 1,
-          "timeToEat": 1,
-          "stayDuration": 8.0,
-          "amountOfEnergy": 3,
+          "radius": 0.4,
+          "timeToEat": 2,
+          "stayDuration": 6.0,
+          "amountOfEnergy": 2,
+          "healthImpact": 0.5,
+          "lifeTimeImpact": 3,
           "coordenates": {
-            "x": 75,
-            "y": 43
+            "x": 155,
+            "y": 110
+          },
+          "hypergiant": false
+        }
+      ]
+    },
+    {
+      "name": "Constelación del Dragón",
+      "starts": [
+        {
+          "id": 6,
+          "label": "Zeta14",
+          "linkedTo": [
+            {
+              "starId": 5,
+              "distance": 40
+            },
+            {
+              "starId": 7,
+              "distance": 35
+            },
+            {
+              "starId": 8,
+              "distance": 60
+            }
+          ],
+          "radius": 0.6,
+          "timeToEat": 3,
+          "stayDuration": 7.0,
+          "amountOfEnergy": 3,
+          "healthImpact": 3.5,
+          "lifeTimeImpact": 12,
+          "coordenates": {
+            "x": 130,
+            "y": 45
+          },
+          "hypergiant": false
+        },
+        {
+          "id": 7,
+          "label": "Eta22",
+          "linkedTo": [
+            {
+              "starId": 6,
+              "distance": 35
+            },
+            {
+              "starId": 8,
+              "distance": 55
+            },
+            {
+              "starId": 9,
+              "distance": 70
+            }
+          ],
+          "radius": 0.7,
+          "timeToEat": 2,
+          "stayDuration": 5.0,
+          "amountOfEnergy": 2,
+          "healthImpact": 2.5,
+          "lifeTimeImpact": 9,
+          "coordenates": {
+            "x": 165,
+            "y": 60
+          },
+          "hypergiant": false
+        },
+        {
+          "id": 8,
+          "label": "Theta8",
+          "linkedTo": [
+            {
+              "starId": 6,
+              "distance": 60
+            },
+            {
+              "starId": 7,
+              "distance": 55
+            },
+            {
+              "starId": 15,
+              "distance": 65
+            }
+          ],
+          "radius": 0.9,
+          "timeToEat": 4,
+          "stayDuration": 12.0,
+          "amountOfEnergy": 4,
+          "healthImpact": 5.0,
+          "lifeTimeImpact": 18,
+          "coordenates": {
+            "x": 145,
+            "y": 25
           },
           "hypergiant": true
+        }
+      ]
+    },
+    {
+      "name": "Constelación del Fénix",
+      "starts": [
+        {
+          "id": 9,
+          "label": "Iota12",
+          "linkedTo": [
+            {
+              "starId": 7,
+              "distance": 70
+            },
+            {
+              "starId": 10,
+              "distance": 50
+            },
+            {
+              "starId": 11,
+              "distance": 45
+            }
+          ],
+          "radius": 0.5,
+          "timeToEat": 3,
+          "stayDuration": 6.0,
+          "amountOfEnergy": 2,
+          "healthImpact": 1.0,
+          "lifeTimeImpact": 6,
+          "coordenates": {
+            "x": 25,
+            "y": 120
+          },
+          "hypergiant": false
+        },
+        {
+          "id": 10,
+          "label": "Kappa3",
+          "linkedTo": [
+            {
+              "starId": 9,
+              "distance": 50
+            },
+            {
+              "starId": 11,
+              "distance": 38
+            }
+          ],
+          "radius": 0.4,
+          "timeToEat": 2,
+          "stayDuration": 5.0,
+          "amountOfEnergy": 1,
+          "healthImpact": 0.0,
+          "lifeTimeImpact": 0,
+          "coordenates": {
+            "x": 55,
+            "y": 155
+          },
+          "hypergiant": false
+        },
+        {
+          "id": 11,
+          "label": "Lambda7",
+          "linkedTo": [
+            {
+              "starId": 9,
+              "distance": 45
+            },
+            {
+              "starId": 10,
+              "distance": 38
+            },
+            {
+              "starId": 12,
+              "distance": 88
+            }
+          ],
+          "radius": 0.6,
+          "timeToEat": 3,
+          "stayDuration": 8.0,
+          "amountOfEnergy": 3,
+          "healthImpact": 2.8,
+          "lifeTimeImpact": 11,
+          "coordenates": {
+            "x": 85,
+            "y": 130
+          },
+          "hypergiant": false
+        }
+      ]
+    },
+    {
+      "name": "Constelación del León",
+      "starts": [
+        {
+          "id": 15,
+          "label": "Mu19",
+          "linkedTo": [
+            {
+              "starId": 8,
+              "distance": 65
+            },
+            {
+              "starId": 13,
+              "distance": 80
+            },
+            {
+              "starId": 16,
+              "distance": 55
+            }
+          ],
+          "radius": 0.8,
+          "timeToEat": 4,
+          "stayDuration": 9.0,
+          "amountOfEnergy": 4,
+          "healthImpact": 4.5,
+          "lifeTimeImpact": 16,
+          "coordenates": {
+            "x": 170,
+            "y": 185
+          },
+          "hypergiant": true
+        },
+        {
+          "id": 16,
+          "label": "Nu25",
+          "linkedTo": [
+            {
+              "starId": 15,
+              "distance": 55
+            },
+            {
+              "starId": 17,
+              "distance": 40
+            }
+          ],
+          "radius": 0.5,
+          "timeToEat": 2,
+          "stayDuration": 5.0,
+          "amountOfEnergy": 2,
+          "healthImpact": 1.8,
+          "lifeTimeImpact": 7,
+          "coordenates": {
+            "x": 130,
+            "y": 195
+          },
+          "hypergiant": false
+        },
+        {
+          "id": 17,
+          "label": "Xi11",
+          "linkedTo": [
+            {
+              "starId": 16,
+              "distance": 40
+            },
+            {
+              "starId": 11,
+              "distance": 75
+            }
+          ],
+          "radius": 0.4,
+          "timeToEat": 2,
+          "stayDuration": 4.0,
+          "amountOfEnergy": 1,
+          "healthImpact": -0.5,
+          "lifeTimeImpact": -2,
+          "coordenates": {
+            "x": 100,
+            "y": 180
+          },
+          "hypergiant": false
         }
       ]
     }

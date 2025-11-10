@@ -59,6 +59,11 @@ class SimuladorViaje:
         
         for i, opcion in enumerate(alcanzables, 1):
             estrella = self.grafo.obtener_estrella(opcion['id'])
+            
+            if estrella is None:
+                print(f"\n{i}. [ERROR: Estrella ID {opcion['id']} no encontrada]")
+                continue
+            
             tipo = "⭐ HIPERGIGANTE" if estrella.hipergigante else "🌟 Normal"
             
             print(f"\n{i}. {estrella.label} (ID: {opcion['id']}) {tipo}")

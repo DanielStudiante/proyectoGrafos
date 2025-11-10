@@ -4,7 +4,9 @@ Responsabilidad: Dibujar todos los elementos visuales del juego en pantalla.
 """
 
 import pygame
-from views.config import (WINDOW_WIDTH, WINDOW_HEIGHT, Colors, GameState, PanelSizes)
+from views.config import (WINDOW_WIDTH, WINDOW_HEIGHT, Colors, GameState, PanelSizes,
+                          BOARD_WIDTH_UM, BOARD_HEIGHT_UM)
+from views.constellation_legend import ConstellationLegend, ScaleLegend
 
 
 class GameRenderer:
@@ -25,6 +27,30 @@ class GameRenderer:
         """
         self.screen = screen
         self.gm = game_manager
+        
+        # Leyendas (REQUERIMIENTO: mostrar colores de constelaciones)
+        self.constellation_legend = None
+        self.scale_legend = None
+        self._initialize_legends()
+    
+    def _initialize_legends(self):
+        """Inicializa las leyendas después de cargar el grafo."""
+        if hasattr(self.gm, 'grafo') and self.gm.grafo:
+            # Leyenda de constelaciones (abajo izquierda)
+            legend_x = 10
+            legend_y = WINDOW_HEIGHT - 270
+            self.constellation_legend = ConstellationLegend(
+                self.gm.grafo, legend_x, legend_y
+            )
+            
+            # Leyenda de escala (abajo izquierda, encima de constelaciones)
+            self.scale_legend = ScaleLegend(
+                legend_x, legend_y - 90
+            )
+    
+    def update_legends(self):
+        """Actualiza las leyendas cuando se carga un nuevo grafo."""
+        self._initialize_legends()
     
     def draw(self):
         """Dibuja todos los elementos del juego."""
@@ -64,10 +90,15 @@ class GameRenderer:
     def _draw_graph(self):
         """Dibuja el grafo de constelaciones con el burro."""
         visited_stars = set(self.gm.simulador.historial_viaje)
+        
+        # Pasar ruta óptima si está activa (REQUERIMIENTO 1.2)
+        optimal_route = self.gm.optimal_route if self.gm.show_optimal_route else None
+        
         self.gm.graph_renderer.draw(
             self.screen,
             current_star_id=self.gm.simulador.posicion_actual,
-            visited_stars=visited_stars
+            visited_stars=visited_stars,
+            optimal_route=optimal_route
         )
     
     def _draw_panels(self):
@@ -76,6 +107,12 @@ class GameRenderer:
         self.gm.reachable_panel.draw(self.screen)
         self.gm.actions_panel.draw(self.screen)
         self.gm.star_info_panel.draw(self.screen)
+        
+        # Leyendas (abajo)
+        if self.constellation_legend:
+            self.constellation_legend.draw(self.screen)
+        if self.scale_legend:
+            self.scale_legend.draw(self.screen, BOARD_WIDTH_UM, BOARD_HEIGHT_UM)
     
     def _draw_overlays(self):
         """Dibuja notificaciones y tooltips."""

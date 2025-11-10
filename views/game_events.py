@@ -223,6 +223,44 @@ class GameEventHandler:
             Colors.TEXT_SECONDARY
         )
     
+    def _on_calculate_route_click(self):
+        """
+        Callback: Calcular ruta óptima (REQUERIMIENTO 1.2).
+        
+        Encuentra la ruta que permite visitar la mayor cantidad de estrellas
+        con los valores iniciales del burro.
+        """
+        from algorithms.max_stars_route import encontrar_ruta_maxima_estrellas, obtener_nombres_ruta
+        
+        self.gm.notification.add(
+            "🔍 Calculando ruta óptima...",
+            Colors.TEXT_INFO
+        )
+        
+        # Calcular ruta óptima
+        resultado = encontrar_ruta_maxima_estrellas(
+            self.gm.grafo,
+            self.gm.burro,
+            self.gm.simulador.posicion_actual,
+            verbose=True  # Imprimir información en consola
+        )
+        
+        # Guardar la ruta óptima en el game manager
+        self.gm.optimal_route = resultado['ruta']
+        self.gm.show_optimal_route = True
+        
+        # Mostrar resultado al usuario
+        nombres = obtener_nombres_ruta(self.gm.grafo, resultado['ruta'])
+        ruta_str = ' → '.join(nombres[:5])  # Mostrar primeras 5 estrellas
+        if len(nombres) > 5:
+            ruta_str += f" ... (+{len(nombres)-5} más)"
+        
+        self.gm.notification.add(
+            f"✅ Ruta óptima: {resultado['estrellas_visitadas']} estrellas\n{ruta_str}",
+            Colors.TEXT_SUCCESS,
+            duration=5000
+        )
+    
     def _debug_travel(self, resultado):
         """Imprime información de debug para el viaje."""
         print(f"\n🔍 DEBUG VIAJE:")

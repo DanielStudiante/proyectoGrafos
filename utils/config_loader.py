@@ -23,11 +23,10 @@ def cargar_grafo_desde_json(ruta: str = "data/config.json") -> GrafoConstelacion
     
     grafo = GrafoConstelaciones()
     
-    # Procesar constelaciones y estrellas
+    # PASO 1: Crear todas las estrellas primero
     for constellation in data.get('constellations', []):
         constellation_name = constellation.get('name', 'Sin nombre')
         
-        # Agregar estrellas de la constelación
         for star_data in constellation.get('starts', []):  # Nota: JSON usa "starts" (typo)
             coords = star_data.get('coordenates', {})
             grafo.agregar_estrella(
@@ -44,14 +43,21 @@ def cargar_grafo_desde_json(ruta: str = "data/config.json") -> GrafoConstelacion
                 health_impact=star_data.get('healthImpact', 0.0),
                 life_time_impact=star_data.get('lifeTimeImpact', 0.0),
             )
+    
+    # PASO 2: Crear conexiones solo entre estrellas existentes
+    for constellation in data.get('constellations', []):
+        for star_data in constellation.get('starts', []):
+            star_id = star_data['id']
             
-            # Agregar aristas desde linkedTo
+            # Solo agregar enlaces si ambas estrellas existen
             for link in star_data.get('linkedTo', []):
-                grafo.add_edge(
-                    star_data['id'],
-                    link['starId'],
-                    link.get('distance', 1.0)
-                )
+                target_id = link['starId']
+                
+                # Verificar que la estrella destino existe
+                if grafo.obtener_estrella(target_id) is not None:
+                    grafo.add_edge(star_id, target_id, link.get('distance', 1.0))
+                else:
+                    print(f"⚠️  Advertencia: Estrella {target_id} no existe, omitiendo conexión desde {star_id}")
     
     return grafo
 
