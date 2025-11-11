@@ -118,37 +118,39 @@ class Donkey:
     
     def calculate_grass_profit(self) -> float:
         """
-        Calcula el multiplicador de ganancia de energía al comer pasto.
+        Calcula cuánta energía aporta cada kg de pasto consumido.
         
-        El multiplicador depende del estado de salud actual:
-        - Excelente: 1.05x (5% extra)
-        - Buena: 1.03x (3% extra)
-        - Mala: 1.02x (2% extra)
-        - Moribundo: 1.01x (1% extra)
-        - Muerto: 1.00x (sin ganancia)
+        REQUERIMIENTO: El burro come pasto cuando tiene menos del 50% de energía.
+        Cada kg de pasto aporta diferente energía según su salud:
+        - Excelente: 5% de energía por kg
+        - Buena: 3% de energía por kg  
+        - Mala: 2% de energía por kg
+        - Moribundo: 1% de energía por kg
         
         Returns:
-            Multiplicador de energía ganada (1.0 - 1.05)
+            Porcentaje de energía ganada por kg de pasto (1-5%)
         """
         if self.grass_in_basement <= 0:
             return 0.0
         
-        # Mapeo de estado de salud a multiplicador
-        health_multipliers = {
-            'Excelente': 1.05,
-            'Buena': 1.03,
-            'Mala': 1.02,
-            'Moribundo': 1.01,
+        # Mapeo de estado de salud a porcentaje de energía ganada por kg
+        health_energy_gain = {
+            'Excelente': 5.0,  # 5% de energía por kg
+            'Buena': 3.0,      # 3% de energía por kg
+            'Mala': 2.0,       # 2% de energía por kg
+            'Moribundo': 1.0,  # 1% de energía por kg
         }
         
-        return health_multipliers.get(self.health, 1.0)
+        return health_energy_gain.get(self.health, 2.0)
     
-    def eat_grass(self, grass_profit: float = 1.0) -> bool:
+    def eat_grass(self, grass_profit: float = 5.0) -> bool:
         """
         Consume 1kg de pasto para recuperar energía.
         
+        REQUERIMIENTO: Solo puede comer si tiene menos del 50% de energía.
+        
         Args:
-            grass_profit: Multiplicador de ganancia de energía
+            grass_profit: Porcentaje de energía ganada por kg (1-5%)
             
         Returns:
             True si comió exitosamente, False si no pudo comer
@@ -157,12 +159,13 @@ class Donkey:
             print("No hay hierba en el sótano para que el burro coma.")
             return False
         
-        if self.donkey_energy >= MAX_ENERGY:
-            print("El burro ya tiene energía completa y no necesita comer.")
+        # REQUERIMIENTO: Solo puede comer si tiene menos del 50% de energía
+        if self.donkey_energy >= 50.0:
+            print(f"El burro tiene {self.donkey_energy:.1f}% de energía (≥50%). No necesita comer.")
             return False
         
-        # Incrementar energía
-        self.donkey_energy += 1.0 * grass_profit
+        # Incrementar energía según el porcentaje de ganancia
+        self.donkey_energy += grass_profit
         self.donkey_energy = self._clamp_energy(self.donkey_energy)
         
         # Consumir pasto
@@ -189,11 +192,18 @@ class Donkey:
         """
         El burro permanece en una estrella para investigar.
         
+        REQUERIMIENTO: Al llegar a una estrella:
+        - Si tiene < 50% energía, usa el 50% del tiempo para comer
+        - El 50% restante (o 100% si no come) se usa para investigar
+        - Cada kg de pasto tarda "time_to_eat_kg" horas en consumirse
+        - La investigación consume "research_energy_cost" por hora
+        
         Args:
-            time_to_eat_kg: Tiempo para comer 1kg de hierba
-            time_of_stance: Tiempo total de estancia en la estrella
+            time_to_eat_kg: Tiempo para comer 1kg de hierba (horas)
+            time_of_stance: Tiempo total de estancia en la estrella (horas)
             health_impact: Impacto en la energía/salud (positivo o negativo)
             life_time_impact: Impacto en el tiempo de vida en años luz
+            research_energy_cost: Energía consumida por hora de investigación
             
         Returns:
             None si sobrevive, mensaje de error si muere
@@ -203,27 +213,47 @@ class Donkey:
         
         print(f"\n🔬 El burro investiga la estrella...")
         
-        # Si tiene poca energía, debe comer primero
-        if self.donkey_energy < 50:
-            print(f"⚠️ Energía baja ({self.donkey_energy:.1f}). El burro debe comer primero.")
-            time_investigate = time_of_stance * 0.5
-            time_to_eat = time_of_stance - time_investigate
+        # REQUERIMIENTO: Si tiene < 50% energía, debe comer primero
+        if self.donkey_energy < 50.0:
+            print(f"⚠️ Energía baja ({self.donkey_energy:.1f}%). El burro come primero.")
             
+            # 50% del tiempo para comer, 50% para investigar
+            time_to_eat = time_of_stance * 0.5
+            time_investigate = time_of_stance * 0.5
+            
+            # Calcular cuántos kg puede comer en ese tiempo
             kg_to_eat = int(time_to_eat / time_to_eat_kg) if time_to_eat_kg > 0 else 0
+            
+            print(f"🍽️  Tiempo disponible para comer: {time_to_eat:.1f} horas")
+            print(f"🌾 Puede comer hasta {kg_to_eat} kg de pasto")
+            
+            # Comer pasto según el tiempo disponible
+            kg_comidos = 0
             for _ in range(kg_to_eat):
-                if self.eat_grass(self.calculate_grass_profit()):
+                grass_profit = self.calculate_grass_profit()
+                if self.eat_grass(grass_profit):
+                    kg_comidos += 1
                     sleep(time_to_eat_kg)
-                    print(f"  🌾 El burro ha comido 1 kg de hierba.")
+                    print(f"  🌾 Comió 1 kg (+{grass_profit:.1f}% energía). Energía: {self.donkey_energy:.1f}%")
+                    
+                    # Si ya tiene ≥50% energía, deja de comer
+                    if self.donkey_energy >= 50.0:
+                        print(f"  ✅ Energía recuperada a {self.donkey_energy:.1f}%. Deja de comer.")
+                        break
                 else:
-                    print(f"  ❌ El burro no pudo comer más hierba.")
                     break
+            
+            if kg_comidos > 0:
+                print(f"🌾 Total comido: {kg_comidos} kg de pasto")
         else:
+            # Si tiene ≥50% energía, usa todo el tiempo para investigar
             time_investigate = time_of_stance
+            print(f"✅ Energía suficiente ({self.donkey_energy:.1f}%). No necesita comer.")
         
         # Aplicar efectos de la investigación
         print(f"⏱️ Tiempo de investigación: {time_investigate:.1f} horas")
         
-        # REQUERIMIENTO 2.0: Consumir energía durante la investigación
+        # REQUERIMIENTO: Consumir energía durante la investigación
         # "Y" cantidad de energía por cada "X" tiempo de investigación
         if research_energy_cost > 0:
             energia_consumida = research_energy_cost * time_investigate

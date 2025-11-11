@@ -139,6 +139,8 @@ class GrafoConstelaciones(Graph):
         """
         Bloquea el camino entre dos estrellas (REQUERIMIENTO 0.5).
         
+        IMPORTANTE: En un grafo no dirigido, bloquear A→B también bloquea B→A.
+        
         Args:
             from_id: ID de la estrella origen
             to_id: ID de la estrella destino
@@ -150,13 +152,17 @@ class GrafoConstelaciones(Graph):
         vertex_to = self.get_vertex(to_id)
         
         if vertex_from and vertex_to and vertex_to in vertex_from.neighbors:
+            # Bloquear en AMBAS direcciones para grafo no dirigido
             vertex_from.block_edge(to_id)
+            vertex_to.block_edge(from_id)
             return True
         return False
     
     def habilitar_camino(self, from_id: int, to_id: int) -> bool:
         """
         Habilita el camino entre dos estrellas (REQUERIMIENTO 0.5).
+        
+        IMPORTANTE: En un grafo no dirigido, habilitar A→B también habilita B→A.
         
         Args:
             from_id: ID de la estrella origen
@@ -169,13 +175,17 @@ class GrafoConstelaciones(Graph):
         vertex_to = self.get_vertex(to_id)
         
         if vertex_from and vertex_to and vertex_to in vertex_from.neighbors:
+            # Habilitar en AMBAS direcciones para grafo no dirigido
             vertex_from.unblock_edge(to_id)
+            vertex_to.unblock_edge(from_id)
             return True
         return False
     
     def esta_camino_bloqueado(self, from_id: int, to_id: int) -> bool:
         """
         Verifica si el camino está bloqueado (REQUERIMIENTO 0.5).
+        
+        IMPORTANTE: Verifica en ambas direcciones ya que es un grafo no dirigido.
         
         Args:
             from_id: ID de la estrella origen
@@ -185,19 +195,35 @@ class GrafoConstelaciones(Graph):
             True si está bloqueado, False si está habilitado
         """
         vertex_from = self.get_vertex(from_id)
-        if vertex_from:
-            return vertex_from.is_edge_blocked(to_id)
+        vertex_to = self.get_vertex(to_id)
+        
+        # Verificar bloqueo en cualquiera de las dos direcciones
+        if vertex_from and vertex_from.is_edge_blocked(to_id):
+            return True
+        if vertex_to and vertex_to.is_edge_blocked(from_id):
+            return True
+        
         return False
     
     def obtener_caminos_bloqueados(self) -> List[tuple]:
         """
         Obtiene lista de todos los caminos bloqueados.
         
+        IMPORTANTE: Como el grafo es no dirigido, evita duplicados (A→B y B→A se consideran el mismo camino).
+        
         Returns:
-            Lista de tuplas (from_id, to_id) de caminos bloqueados
+            Lista de tuplas (from_id, to_id) de caminos bloqueados (sin duplicados)
         """
         bloqueados = []
+        procesados = set()
+        
         for vertex_id, vertex in self.graph.items():
             for blocked_id in vertex.blocked_edges:
-                bloqueados.append((vertex_id, blocked_id))
+                # Crear clave única para evitar duplicados (A→B y B→A)
+                camino_key = tuple(sorted([vertex_id, blocked_id]))
+                
+                if camino_key not in procesados:
+                    bloqueados.append((vertex_id, blocked_id))
+                    procesados.add(camino_key)
+        
         return bloqueados

@@ -5,6 +5,9 @@ def dijkstra(graph, start_id, end_id=None, verbose=False):
     """
     Algoritmo de Dijkstra para encontrar el camino más corto.
     
+    REQUERIMIENTO: Una estrella solo puede ser visitada una única vez.
+    No considera estrellas ya visitadas como destinos válidos.
+    
     Args:
         graph: Instancia de Graph con get_vertices() y get_vertex()
         start_id: ID del vértice inicial
@@ -44,6 +47,12 @@ def dijkstra(graph, start_id, end_id=None, verbose=False):
             v_id = vertex_v.id
             
             if v_id in visitados:
+                continue
+            
+            # REQUERIMIENTO: No considerar estrellas ya visitadas
+            # (excepto si es el punto de partida)
+            estrella_v = graph.obtener_estrella(v_id)
+            if estrella_v and estrella_v.visitada and v_id != start_id:
                 continue
             
             nueva_distancia = dist[u_id] + weight

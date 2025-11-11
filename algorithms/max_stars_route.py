@@ -1,9 +1,5 @@
 """
 Algoritmo para encontrar la ruta que permita visitar la mayor cantidad de estrellas.
-
-REQUERIMIENTO 1.2: Dada una estrella origen y las condiciones iniciales del burro,
-proponer la ruta que le permitirá conocer la mayor cantidad de estrellas antes de morir.
-
 Este algoritmo utiliza backtracking con poda para explorar todas las rutas posibles
 y encontrar la que maximiza el número de estrellas visitadas.
 """

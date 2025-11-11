@@ -19,12 +19,22 @@ class TravelManager:
         """
         Ejecuta un viaje completo a una estrella destino.
         
+        REQUERIMIENTO: Una estrella solo puede ser visitada una única vez.
+        
         Returns:
             tuple: (exito: bool, nueva_posicion: int, distancia_recorrida: float)
         """
         if not self.donkey.alive:
             if verbose:
                 print("❌ El burro está muerto. No puede viajar.")
+            return (False, origen, 0.0)
+        
+        # REQUERIMIENTO: Verificar que la estrella destino no haya sido visitada
+        estrella_destino = self.grafo.obtener_estrella(destino)
+        if estrella_destino and estrella_destino.visitada:
+            if verbose:
+                print(f"❌ La estrella {estrella_destino.label} ya fue visitada anteriormente.")
+                print(f"   REQUERIMIENTO: Una estrella solo puede ser visitada una única vez.")
             return (False, origen, 0.0)
         
         # Planificar ruta

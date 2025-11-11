@@ -92,7 +92,15 @@ class GameRenderer:
     
     def _draw_graph(self):
         """Dibuja el grafo de constelaciones con el burro."""
+        # Obtener estrellas visitadas (REQUERIMIENTO: Una estrella solo se visita una vez)
+        # Usar tanto el historial como el atributo 'visitada' de las estrellas
         visited_stars = set(self.gm.simulador.historial_viaje)
+        
+        # Agregar estrellas marcadas como visitadas en el grafo
+        for star_id, vertex in self.gm.grafo.graph.items():
+            estrella = self.gm.grafo.obtener_estrella(star_id)
+            if estrella and estrella.visitada:
+                visited_stars.add(star_id)
         
         # Pasar rutas óptimas si están activas
         optimal_route = self.gm.optimal_route if self.gm.show_optimal_route else None
